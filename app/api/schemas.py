@@ -130,3 +130,14 @@ class ProviderEventIn(BaseModel):
     status: Literal["succeeded", "failed"]
     amount: int
     card_last4: str = Field(pattern=r"^\d{4}$")
+
+
+class StatementIn(BaseModel):
+    period: str = Field(pattern=r"^\d{4}-(0[1-9]|1[0-2])$", examples=["2026-10"])
+
+
+class StatementOut(BaseModel):
+    period: str
+    rows: int
+    created_at: datetime
+    download_url: str

@@ -32,6 +32,15 @@ class Settings(BaseSettings):
     kafka_bootstrap_servers: str = "localhost:9092"
     reconciliation_interval_seconds: int = 300
 
+    s3_endpoint_url: str | None = "http://localhost:4566"
+    s3_public_endpoint_url: str | None = "http://localhost:4566"
+    s3_bucket: str = "monetka-statements"
+    aws_region: str = "eu-central-1"
+    aws_access_key_id: str = "test"
+    aws_secret_access_key: str = "test"
+
+    log_level: str = "INFO"
+
     payment_request_ttl_hours: int = 24
     hold_ttl_days: int = 7
 

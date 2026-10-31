@@ -161,3 +161,15 @@ class ReconciliationRun(Base):
     books_total: Mapped[int] = mapped_column(BigInteger)
     problems: Mapped[dict[str, Any]]
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
+
+
+class Statement(Base):
+    __tablename__ = "statements"
+    __table_args__ = (UniqueConstraint("user_id", "period"),)
+
+    id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
+    user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"), index=True)
+    period: Mapped[str] = mapped_column(String(7))
+    object_key: Mapped[str] = mapped_column(String(255))
+    rows: Mapped[int]
+    created_at: Mapped[datetime] = mapped_column(server_default=func.now())

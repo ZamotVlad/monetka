@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Any
 from uuid import UUID
 
-from sqlalchemy import case, func, select
+from sqlalchemy import BigInteger, case, cast, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models import LedgerEntry, LedgerTransaction
@@ -46,14 +46,23 @@ class LedgerRepository:
         return transaction
 
     async def history(
-        self, wallet_id: UUID, hold_id: UUID, limit: int, before: int | None
+        self,
+        wallet_id: UUID,
+        hold_id: UUID,
+        limit: int | None,
+        before: int | None = None,
+        since: datetime | None = None,
+        until: datetime | None = None,
     ) -> list[HistoryRow]:
         """One row per transaction, with what it did to the wallet and to the reserve."""
-        wallet_delta = func.sum(
-            case((LedgerEntry.account_id == wallet_id, LedgerEntry.amount), else_=0)
+        # SUM over BIGINT gives NUMERIC in PostgreSQL; cast back to get Python ints
+        wallet_delta = cast(
+            func.sum(case((LedgerEntry.account_id == wallet_id, LedgerEntry.amount), else_=0)),
+            BigInteger,
         )
-        held_delta = func.sum(
-            case((LedgerEntry.account_id == hold_id, LedgerEntry.amount), else_=0)
+        held_delta = cast(
+            func.sum(case((LedgerEntry.account_id == hold_id, LedgerEntry.amount), else_=0)),
+            BigInteger,
         )
         query = (
             select(
@@ -72,5 +81,9 @@ class LedgerRepository:
         )
         if before is not None:
             query = query.where(LedgerTransaction.id < before)
+        if since is not None:
+            query = query.where(LedgerTransaction.created_at >= since)
+        if until is not None:
+            query = query.where(LedgerTransaction.created_at < until)
         rows = await self._session.execute(query)
         return [HistoryRow(*row) for row in rows]
