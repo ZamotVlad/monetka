@@ -6,7 +6,7 @@ from uuid import UUID
 import pytest
 from alembic import command
 from alembic.config import Config
-from fakeredis import FakeAsyncRedis
+from fakeredis import FakeAsyncRedis, FakeServer
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy import text
@@ -67,7 +67,12 @@ async def clean_database(engine: AsyncEngine) -> None:
 
 @pytest.fixture
 def settings(database_url: str) -> Settings:
-    return Settings(environment="test", database_url=database_url, bcrypt_rounds=4)
+    return Settings(
+        environment="test",
+        database_url=database_url,
+        bcrypt_rounds=4,
+        money_rate_limit_per_minute=10_000,
+    )
 
 
 @pytest.fixture
@@ -82,7 +87,7 @@ def app(
     app = create_app(settings)
     app.state.engine = engine
     app.state.session_factory = session_factory
-    app.state.redis = FakeAsyncRedis(decode_responses=True)
+    app.state.redis = FakeAsyncRedis(server=FakeServer(), decode_responses=True)
     return app
 
 
