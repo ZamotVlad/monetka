@@ -173,7 +173,7 @@ function route(method, path, body, headers) {
     const u = need();
     const id = uid();
     db.deposits[id] = { id, amount: body.amount, status: "pending", created_at: iso(), email: u.email };
-    return [201, { ...db.deposits[id], checkout_url: `app.html?deposit=${id}` }];
+    return [201, { ...db.deposits[id], checkout_url: `bank.html?deposit=${id}` }];
   }
   if (parts[0] === "deposits") {
     need();
@@ -274,21 +274,20 @@ function route(method, path, body, headers) {
   throw new Refusal(404, "not_found", `No demo route for ${method} ${pathname}`);
 }
 
-// No bank here: the "provider" approves a top-up on its own a moment after it starts.
-// Checked on every call, because the page navigates away right after creating it.
-function settleDeposits() {
-  for (const deposit of Object.values(db.deposits)) {
-    if (deposit.status === "pending" && Date.now() - Date.parse(deposit.created_at) > 1000) {
-      post(db, "deposit", [["psp", -deposit.amount], [`wallet:${deposit.email}`, deposit.amount]], { card: "4242" });
-      deposit.status = "succeeded";
-      emit("wallet.changed");
-    }
+/** Called by bank.html, the demo's stand-in for the bank page and its webhook. */
+export function completeDemoDeposit(id, succeeded) {
+  db = load();
+  const deposit = db.deposits[id];
+  if (!deposit || deposit.status !== "pending") return;
+  if (succeeded) {
+    post(db, "deposit", [["psp", -deposit.amount], [`wallet:${deposit.email}`, deposit.amount]], { card: "4242" });
   }
+  deposit.status = succeeded ? "succeeded" : "failed";
+  save();
 }
 
 export async function demoFetch(path, { method = "GET", body, headers = {} }) {
   db = load();
-  settleDeposits();
   await new Promise((resolve) => setTimeout(resolve, 120));
   try {
     const [status, data] = route(method, path, body ? JSON.parse(body) : undefined, headers);

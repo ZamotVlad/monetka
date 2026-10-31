@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;600&display=swap">
+<link rel="stylesheet" href="assets/css/monetka.css">
+<title>Monetka · Test bank</title>
+</head>
+<body>
+<main id="main" class="auth">
+  <section class="card" style="width:min(400px,100%)">
+    <p class="badge" data-i18n="nav.badge" style="display:inline-block;margin:0 0 14px"></p>
+    <h2 data-i18n="bank.title"></h2>
+    <p class="muted" data-i18n="bank.for" style="margin:0"></p>
+    <p class="balance"><span class="main" id="amount" style="font-size:32px">—</span></p>
+    <form id="bank" novalidate>
+      <div class="field">
+        <label for="card" data-i18n="bank.card"></label>
+        <input id="card" value="4242 4242 4242 4242" inputmode="numeric" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="exp" data-i18n="bank.expiry"></label>
+        <input id="exp" value="12/30" autocomplete="off">
+      </div>
+      <div class="actions">
+        <button class="btn good" type="submit" data-i18n="bank.pay"></button>
+        <button class="btn" type="button" id="cancel" data-i18n="bank.cancel"></button>
+      </div>
+    </form>
+    <ul class="list-plain" style="margin-top:18px" aria-labelledby="cards-title">
+      <li><strong id="cards-title" data-i18n="bank.cards"></strong></li>
+      <li><span>4242 4242 4242 4242</span><span data-i18n="bank.ok"></span></li>
+      <li><span>4000 0000 0000 0002</span><span data-i18n="bank.declined"></span></li>
+    </ul>
+    <p class="muted" data-i18n="bank.note" style="font-size:13px"></p>
+  </section>
+</main>
+<script type="module" src="assets/js/bank.js"></script>
+</body>
+</html>
