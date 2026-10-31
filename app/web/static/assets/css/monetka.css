@@ -101,6 +101,13 @@ a { color: inherit; text-underline-offset: 3px; }
   background: var(--amber-soft);
 }
 
+.badge {
+  font: 600 12px var(--mono); padding: 4px 8px; margin-right: auto;
+  border: 2px dashed var(--ink); background: var(--amber-soft);
+}
+.logo + .badge { margin-left: -4px; }
+.topbar:has(.badge) .logo { margin-right: 0; }
+
 .topbar .who { font: 13px var(--mono); color: var(--muted); }
 
 /* Buttons and fields */
@@ -273,7 +280,14 @@ footer.site { max-width: 1120px; margin: 0 auto; padding: 0 24px 32px; font: 13p
 
 @media (max-width: 520px) {
   .topbar { padding: 12px 16px; }
-  .topbar .who { display: none; }
+  .badge {
+  font: 600 12px var(--mono); padding: 4px 8px; margin-right: auto;
+  border: 2px dashed var(--ink); background: var(--amber-soft);
+}
+.logo + .badge { margin-left: -4px; }
+.topbar:has(.badge) .logo { margin-right: 0; }
+
+.topbar .who { display: none; }
   .page { padding: 20px 16px 48px; }
   .card { padding: 18px; }
   .history li { grid-template-columns: minmax(0, 1fr) auto; }

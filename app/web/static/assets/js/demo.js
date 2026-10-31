@@ -156,6 +156,13 @@ function route(method, path, body, headers) {
     emit("wallet.changed");
     return [201, txn];
   }
+  if (pathname === "/config") return [200, { test_money: true }];
+  if (method === "POST" && pathname === "/test-money") {
+    const u = need();
+    const txn = post(db, "deposit", [["psp", -100000], [`wallet:${u.email}`, 100000]], { source: "test" });
+    emit("wallet.changed");
+    return [201, txn];
+  }
   if (method === "POST" && pathname === "/withdrawals") {
     const u = need();
     const txn = post(db, "withdrawal", [[`wallet:${u.email}`, -body.amount], ["psp", body.amount]], { card: body.card_last4 });

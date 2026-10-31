@@ -52,9 +52,12 @@ PAGE = """<!doctype html>
             border: 2px solid #1d1b16; box-shadow: 3px 3px 0 #1d1b16; }}
   .pay {{ background: #2f6f4f; color: #fff; }} .decline {{ background: #fff; }}
   button:focus-visible {{ outline: 3px solid #c2410c; outline-offset: 2px; }}
+  .badge {{ display: inline-block; font-size: 12px; font-weight: 700; padding: 4px 8px;
+            border: 2px dashed #1d1b16; background: #f6e6c8; margin: 0 0 14px; }}
   p.note {{ font-size: 12px; color: #5c574c; margin: 16px 0 0; }}
 </style></head>
 <body><main>
+  <p class="badge">Learning project · no real money</p>
   <h1>Test card provider</h1>
   <p class="sum">{amount} ₴</p>
   <form method="post" action="/checkout/complete">
@@ -68,7 +71,8 @@ PAGE = """<!doctype html>
       <button class="decline" name="outcome" value="failed">Decline</button>
     </div>
   </form>
-  <p class="note">No real money. This page stands in for a bank in local runs.</p>
+  <p class="note">Nothing is charged: this page stands in for a bank in local runs.
+  Any card number works.</p>
 </main></body></html>"""
 
 

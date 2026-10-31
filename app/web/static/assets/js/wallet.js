@@ -19,7 +19,10 @@ function describe(item) {
   const d = item.details;
   switch (item.kind) {
     case "deposit":
-      return { title: t("kind.deposit", { card: d.card }), amount: item.wallet_delta };
+      return {
+        title: d.source === "test" ? t("kind.testMoney") : t("kind.deposit", { card: d.card }),
+        amount: item.wallet_delta,
+      };
     case "withdrawal":
       return { title: t("kind.withdrawal", { card: d.card }), amount: item.wallet_delta };
     case "transfer": {
@@ -230,6 +233,19 @@ $("requests").addEventListener("click", async (event) => {
 
 $("more").addEventListener("click", () => loadHistory(false));
 
+$("test-money").addEventListener("click", async (event) => {
+  event.target.disabled = true;
+  try {
+    await api("/test-money", { method: "POST", idempotent: true });
+    toast(t("toast.testMoney"), "good");
+    scheduleRefresh();
+  } catch (failure) {
+    toast(errorText(failure), "bad");
+  } finally {
+    event.target.disabled = false;
+  }
+});
+
 $("make-statement").addEventListener("click", async (event) => {
   event.target.disabled = true;
   try {
@@ -265,7 +281,9 @@ async function followDeposit(id) {
 }
 
 async function start() {
-  state.me = await api("/auth/me");
+  const [me, config] = await Promise.all([api("/auth/me"), api("/config", { auth: false })]);
+  state.me = me;
+  $("test-money").hidden = !config.test_money;
   $("who").textContent = state.me.email;
   $("ops-link").hidden = !state.me.is_operator;
   await refresh();

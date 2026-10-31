@@ -10,6 +10,7 @@ const dict = {
     "nav.shop": "Демо-магазин",
     "nav.api": "API",
     "skip": "До змісту",
+    "nav.badge": "Навчальний проєкт · гроші не справжні",
 
     "auth.title": "Гаманець, де кожна копійка на своєму місці",
     "auth.lead": "Поповнюйте з картки, переказуйте друзям за email і платіть у магазинах із резервом: гроші списуються лише тоді, коли магазин виконав замовлення.",
@@ -23,7 +24,7 @@ const dict = {
     "auth.passwordHint": "Щонайменше 8 символів",
     "auth.submitIn": "Увійти",
     "auth.submitUp": "Створити гаманець",
-    "auth.demo": "Демо: olena@monetka.demo, пароль demo-password",
+    "auth.demo": "Навчальний проєкт: усі гроші тут не справжні. Демо-вхід: olena@monetka.demo, пароль demo-password",
 
     "wallet.available": "Доступно",
     "wallet.held": "Заблоковано",
@@ -32,6 +33,7 @@ const dict = {
     "wallet.topup": "Поповнити",
     "wallet.send": "Переказати",
     "wallet.withdraw": "Вивести",
+    "wallet.testMoney": "+1 000 ₴ тестових",
     "wallet.requests": "Чекають на вашу відповідь",
     "wallet.noRequests": "Немає запитів на оплату.",
     "wallet.reserved": "Зарезервовано",
@@ -75,6 +77,7 @@ const dict = {
     "deposit.failed": "Банк відхилив поповнення. Гроші не списано.",
 
     "kind.deposit": "Поповнення з картки •••• {card}",
+    "kind.testMoney": "Тестові гроші",
     "kind.withdrawal": "Виведення на картку •••• {card}",
     "kind.transferOut": "Переказ для {to}",
     "kind.transferIn": "Переказ від {from}",
@@ -87,6 +90,7 @@ const dict = {
     "toast.sent": "Надіслано {amount}",
     "toast.withdrawn": "Виведено {amount}",
     "toast.statement": "Виписку сформовано",
+    "toast.testMoney": "Додано 1 000 ₴ тестових грошей",
 
     "error.insufficient_funds": "Недостатньо коштів",
     "error.not_found": "Не знайдено",
@@ -151,6 +155,7 @@ const dict = {
     "nav.shop": "Demo shop",
     "nav.api": "API",
     "skip": "Skip to content",
+    "nav.badge": "Learning project · no real money",
 
     "auth.title": "A wallet where every kopiyka is accounted for",
     "auth.lead": "Top up from a card, send money by email and pay shops with a reserve: the money leaves only when the shop has delivered.",
@@ -164,7 +169,7 @@ const dict = {
     "auth.passwordHint": "At least 8 characters",
     "auth.submitIn": "Sign in",
     "auth.submitUp": "Create wallet",
-    "auth.demo": "Demo: olena@monetka.demo, password demo-password",
+    "auth.demo": "A learning project: no money here is real. Demo sign-in: olena@monetka.demo, password demo-password",
 
     "wallet.available": "Available",
     "wallet.held": "Reserved",
@@ -173,6 +178,7 @@ const dict = {
     "wallet.topup": "Top up",
     "wallet.send": "Send",
     "wallet.withdraw": "Withdraw",
+    "wallet.testMoney": "+1,000 ₴ test money",
     "wallet.requests": "Waiting for your answer",
     "wallet.noRequests": "No payment requests.",
     "wallet.reserved": "Reserved",
@@ -216,6 +222,7 @@ const dict = {
     "deposit.failed": "The bank declined the top-up. Nothing was charged.",
 
     "kind.deposit": "Top-up from card •••• {card}",
+    "kind.testMoney": "Test money",
     "kind.withdrawal": "Withdrawal to card •••• {card}",
     "kind.transferOut": "Sent to {to}",
     "kind.transferIn": "Received from {from}",
@@ -228,6 +235,7 @@ const dict = {
     "toast.sent": "Sent {amount}",
     "toast.withdrawn": "Withdrew {amount}",
     "toast.statement": "Statement is ready",
+    "toast.testMoney": "Added 1,000 ₴ of test money",
 
     "error.insufficient_funds": "Not enough money",
     "error.not_found": "Not found",
