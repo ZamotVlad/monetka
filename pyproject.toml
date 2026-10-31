@@ -37,6 +37,10 @@ target-version = "py312"
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM", "ASYNC", "RUF"]
 
+[tool.ruff.lint.per-file-ignores]
+# Ukrainian demo data: Cyrillic letters that look like Latin ones are intended
+"app/cli.py" = ["RUF001"]
+
 [tool.mypy]
 python_version = "3.12"
 strict = true
