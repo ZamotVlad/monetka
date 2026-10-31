@@ -7,6 +7,7 @@ from app.db.uow import UnitOfWork
 from app.domain import ledger
 from app.domain.errors import NotFound
 from app.domain.ledger import Posting, TransactionKind
+from app.messaging.events import EventType, record_for_user
 
 
 class LedgerService:
@@ -33,4 +34,12 @@ class LedgerService:
         )
         for account in accounts.values():
             account.balance = new_balances[account.id]
-        return await self._uow.ledger.add(kind, postings, details or {}, payment_id)
+        transaction = await self._uow.ledger.add(kind, postings, details or {}, payment_id)
+        for user_id in {a.user_id for a in accounts.values() if a.user_id is not None}:
+            record_for_user(
+                self._uow,
+                user_id,
+                EventType.WALLET_CHANGED,
+                {"transaction_id": transaction.id, "kind": kind},
+            )
+        return transaction

@@ -9,6 +9,7 @@ from app.domain.errors import InvalidTransition, NotFound
 from app.domain.ledger import AccountKind, TransactionKind, move
 from app.domain.money import Money
 from app.domain.payments import PaymentStatus, ensure_transition
+from app.messaging.events import EventType, record_for_user
 from app.services.ledger import LedgerService
 
 
@@ -38,6 +39,7 @@ class PaymentService:
         )
         self._uow.payments.add(payment)
         await self._uow.session.flush()
+        self._announce(payment)
         return payment
 
     async def list_for_user(self, user: User, status: PaymentStatus | None) -> Sequence[Payment]:
@@ -68,6 +70,7 @@ class PaymentService:
         payment.status = PaymentStatus.AUTHORIZED
         payment.expires_at = utcnow() + timedelta(days=self._settings.hold_ttl_days)
         await self._uow.session.flush()
+        self._announce(payment)
         return payment
 
     async def decline(self, user: User, payment_id: UUID) -> Payment:
@@ -75,6 +78,7 @@ class PaymentService:
         ensure_transition(PaymentStatus(payment.status), PaymentStatus.DECLINED)
         payment.status = PaymentStatus.DECLINED
         await self._uow.session.flush()
+        self._announce(payment)
         return payment
 
     async def capture(self, merchant: Merchant, payment_id: UUID) -> Payment:
@@ -91,6 +95,7 @@ class PaymentService:
         )
         payment.status = PaymentStatus.CAPTURED
         await self._uow.session.flush()
+        self._announce(payment)
         return payment
 
     async def void(self, merchant: Merchant, payment_id: UUID) -> Payment:
@@ -121,6 +126,7 @@ class PaymentService:
             )
         payment.status = target
         await self._uow.session.flush()
+        self._announce(payment)
 
     async def _lock_for_user(self, user: User, payment_id: UUID) -> Payment:
         payment = await self._uow.payments.lock(payment_id)
@@ -133,6 +139,14 @@ class PaymentService:
         if payment is None or payment.merchant_id != merchant.id:
             raise NotFound("Payment not found")
         return payment
+
+    def _announce(self, payment: Payment) -> None:
+        record_for_user(
+            self._uow,
+            payment.user_id,
+            EventType.PAYMENT_UPDATED,
+            {"payment_id": str(payment.id), "status": payment.status},
+        )
 
     @staticmethod
     def _ensure_not_expired(payment: Payment) -> None:

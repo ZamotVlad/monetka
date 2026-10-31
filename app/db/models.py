@@ -128,3 +128,36 @@ class ProcessedWebhook(Base):
 
     event_id: Mapped[str] = mapped_column(String(64), primary_key=True)
     received_at: Mapped[datetime] = mapped_column(server_default=func.now())
+
+
+class OutboxEvent(Base):
+    """Events written in the same transaction as the change they describe.
+
+    Publishing to Kafka straight from a request can fail after the commit, and the event is
+    lost; or succeed before a rollback, and we announce money that never moved. Here the
+    event exists if and only if the change does, and a relay ships it later.
+    """
+
+    __tablename__ = "outbox"
+    __table_args__ = (
+        Index("ix_outbox_unpublished", "id", postgresql_where=text("published_at IS NULL")),
+    )
+
+    id: Mapped[int] = mapped_column(BigInteger, Identity(), primary_key=True)
+    topic: Mapped[str] = mapped_column(String(64))
+    key: Mapped[str] = mapped_column(String(64))
+    type: Mapped[str] = mapped_column(String(64))
+    payload: Mapped[dict[str, Any]]
+    created_at: Mapped[datetime] = mapped_column(server_default=func.now())
+    published_at: Mapped[datetime | None]
+
+
+class ReconciliationRun(Base):
+    __tablename__ = "reconciliation_runs"
+
+    id: Mapped[int] = mapped_column(BigInteger, Identity(), primary_key=True)
+    ok: Mapped[bool]
+    accounts_checked: Mapped[int]
+    books_total: Mapped[int] = mapped_column(BigInteger)
+    problems: Mapped[dict[str, Any]]
+    created_at: Mapped[datetime] = mapped_column(server_default=func.now())

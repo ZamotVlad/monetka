@@ -8,7 +8,9 @@ from app.repositories.deposits import DepositRepository
 from app.repositories.idempotency import IdempotencyRepository
 from app.repositories.ledger import LedgerRepository
 from app.repositories.merchants import MerchantRepository
+from app.repositories.outbox import OutboxRepository
 from app.repositories.payments import PaymentRepository
+from app.repositories.reconciliation import ReconciliationRepository
 from app.repositories.users import UserRepository
 
 
@@ -28,6 +30,8 @@ class UnitOfWork:
     merchants: MerchantRepository
     payments: PaymentRepository
     deposits: DepositRepository
+    outbox: OutboxRepository
+    reconciliation: ReconciliationRepository
 
     def __init__(self, session_factory: async_sessionmaker[AsyncSession]) -> None:
         self._session_factory = session_factory
@@ -41,6 +45,8 @@ class UnitOfWork:
         self.merchants = MerchantRepository(self.session)
         self.payments = PaymentRepository(self.session)
         self.deposits = DepositRepository(self.session)
+        self.outbox = OutboxRepository(self.session)
+        self.reconciliation = ReconciliationRepository(self.session)
         return self
 
     async def __aexit__(

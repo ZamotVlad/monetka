@@ -10,6 +10,7 @@ from app.domain.errors import NotFound
 from app.domain.ledger import PSP_ACCOUNT_ID, TransactionKind, move
 from app.domain.money import Money
 from app.integrations import psp
+from app.messaging.events import EventType, record_for_user
 from app.services.ledger import LedgerService
 from app.services.payments import utcnow
 
@@ -86,4 +87,10 @@ class DepositService:
             )
         deposit.status = event.status
         await self._uow.session.flush()
+        record_for_user(
+            self._uow,
+            deposit.user_id,
+            EventType.DEPOSIT_UPDATED,
+            {"deposit_id": str(deposit.id), "status": deposit.status},
+        )
         return "processed"
