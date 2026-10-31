@@ -1,13 +1,16 @@
+import asyncio
 from collections.abc import AsyncIterator
-from contextlib import asynccontextmanager
+from contextlib import asynccontextmanager, suppress
 
 from fastapi import FastAPI
 
-from app.api import auth, deposits, health, merchant, payments, transfers, wallet
+from app.api import auth, deposits, health, merchant, payments, transfers, wallet, ws
 from app.api.errors import register_error_handlers
 from app.cache import create_redis
 from app.config import Settings, get_settings
 from app.db.session import create_engine, create_session_factory
+from app.messaging.kafka import consume_forever
+from app.realtime import Hub
 
 
 @asynccontextmanager
@@ -18,9 +21,19 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     app.state.engine = engine
     app.state.session_factory = create_session_factory(engine)
     app.state.redis = redis
+    app.state.hub = hub = Hub()
+    consumer = None
+    if settings.kafka_enabled:
+        consumer = asyncio.create_task(
+            consume_forever(settings.kafka_bootstrap_servers, hub.dispatch)
+        )
     try:
         yield
     finally:
+        if consumer is not None:
+            consumer.cancel()
+            with suppress(asyncio.CancelledError):
+                await consumer
         await redis.aclose()
         await engine.dispose()
 
@@ -38,6 +51,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         payments.router,
         merchant.router,
         deposits.router,
+        ws.router,
     ):
         app.include_router(router, prefix="/api/v1")
     return app
