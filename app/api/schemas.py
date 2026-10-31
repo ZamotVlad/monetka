@@ -141,3 +141,44 @@ class StatementOut(BaseModel):
     rows: int
     created_at: datetime
     download_url: str
+
+
+class ReconciliationOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    ok: bool
+    accounts_checked: int
+    books_total: int
+    problems: dict[str, Any]
+    created_at: datetime
+
+
+class OverviewOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    users: int
+    balances: dict[str, int]
+    books_total: int
+    outbox_backlog: int
+    online: int = 0
+    last_run: ReconciliationOut | None
+
+
+class JournalLineOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    account_id: UUID
+    account_kind: str
+    owner: str
+    amount: int
+
+
+class JournalEntryOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    kind: str
+    details: dict[str, Any]
+    created_at: datetime
+    lines: list[JournalLineOut]

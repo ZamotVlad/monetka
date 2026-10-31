@@ -13,6 +13,8 @@ class ReconciliationService:
         self._uow = uow
 
     async def run(self) -> ReconciliationRun:
+        if self._uow.session.in_transaction():
+            raise RuntimeError("Reconciliation needs a fresh transaction")
         # One snapshot for all three queries; otherwise a transfer committing between them
         # would look like a mismatch
         await self._uow.session.connection(execution_options={"isolation_level": "REPEATABLE READ"})

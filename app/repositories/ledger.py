@@ -4,10 +4,10 @@ from datetime import datetime
 from typing import Any
 from uuid import UUID
 
-from sqlalchemy import BigInteger, case, cast, func, select
+from sqlalchemy import BigInteger, case, cast, func, literal, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db.models import LedgerEntry, LedgerTransaction
+from app.db.models import Account, LedgerEntry, LedgerTransaction, Merchant, User
 from app.domain.ledger import Posting, TransactionKind
 
 
@@ -87,3 +87,53 @@ class LedgerRepository:
             query = query.where(LedgerTransaction.created_at < until)
         rows = await self._session.execute(query)
         return [HistoryRow(*row) for row in rows]
+
+    async def journal(self, limit: int, before: int | None) -> list["JournalEntry"]:
+        return await _journal(self._session, limit, before)
+
+
+@dataclass(frozen=True, slots=True)
+class JournalLine:
+    account_id: UUID
+    account_kind: str
+    owner: str
+    amount: int
+
+
+@dataclass(frozen=True, slots=True)
+class JournalEntry:
+    id: int
+    kind: str
+    details: dict[str, Any]
+    created_at: datetime
+    lines: list[JournalLine]
+
+
+async def _journal(session: AsyncSession, limit: int, before: int | None) -> list[JournalEntry]:
+    """The raw books: each transaction with all of its postings.
+
+    Two queries for the whole page, not one per transaction: the N+1 trap is easy to fall
+    into with an ORM relationship here.
+    """
+    query = select(LedgerTransaction).order_by(LedgerTransaction.id.desc()).limit(limit)
+    if before is not None:
+        query = query.where(LedgerTransaction.id < before)
+    transactions = (await session.scalars(query)).all()
+    if not transactions:
+        return []
+    owner = func.coalesce(User.email, Merchant.name, literal("card provider"))
+    rows = await session.execute(
+        select(LedgerEntry.transaction_id, Account.id, Account.kind, owner, LedgerEntry.amount)
+        .join(Account, Account.id == LedgerEntry.account_id)
+        .outerjoin(User, User.id == Account.user_id)
+        .outerjoin(Merchant, Merchant.id == Account.merchant_id)
+        .where(LedgerEntry.transaction_id.in_([t.id for t in transactions]))
+        .order_by(LedgerEntry.id)
+    )
+    lines: dict[int, list[JournalLine]] = {}
+    for transaction_id, account_id, kind, label, amount in rows:
+        lines.setdefault(transaction_id, []).append(JournalLine(account_id, kind, label, amount))
+    return [
+        JournalEntry(t.id, t.kind, t.details, t.created_at, lines.get(t.id, []))
+        for t in transactions
+    ]
