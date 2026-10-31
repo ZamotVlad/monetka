@@ -108,3 +108,23 @@ class Payment(Base):
     updated_at: Mapped[datetime] = mapped_column(server_default=func.now(), onupdate=func.now())
 
     merchant: Mapped[Merchant] = relationship(lazy="joined", innerjoin=True)
+
+
+class Deposit(Base):
+    __tablename__ = "deposits"
+
+    id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
+    user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"), index=True)
+    amount: Mapped[int] = mapped_column(BigInteger)
+    status: Mapped[str] = mapped_column(String(16))
+    created_at: Mapped[datetime] = mapped_column(server_default=func.now())
+    completed_at: Mapped[datetime | None]
+
+
+class ProcessedWebhook(Base):
+    """Providers deliver at least once; this table makes us process at most once."""
+
+    __tablename__ = "processed_webhooks"
+
+    event_id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    received_at: Mapped[datetime] = mapped_column(server_default=func.now())

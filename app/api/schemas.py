@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any
+from typing import Any, Literal
 from uuid import UUID
 
 from pydantic import (
@@ -108,3 +108,25 @@ class PaymentOut(BaseModel):
 
 class MerchantPaymentOut(PaymentOut):
     customer_id: UUID = Field(validation_alias=AliasChoices("user_id", "customer_id"))
+
+
+class DepositIn(BaseModel):
+    amount: int = Amount
+
+
+class DepositOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    amount: int
+    status: str
+    created_at: datetime
+    checkout_url: str | None = None
+
+
+class ProviderEventIn(BaseModel):
+    event_id: str = Field(min_length=1, max_length=64)
+    deposit_id: UUID
+    status: Literal["succeeded", "failed"]
+    amount: int
+    card_last4: str = Field(pattern=r"^\d{4}$")

@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from app.api import auth, health, merchant, payments, transfers, wallet
+from app.api import auth, deposits, health, merchant, payments, transfers, wallet
 from app.api.errors import register_error_handlers
 from app.cache import create_redis
 from app.config import Settings, get_settings
@@ -37,6 +37,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         transfers.router,
         payments.router,
         merchant.router,
+        deposits.router,
     ):
         app.include_router(router, prefix="/api/v1")
     return app
