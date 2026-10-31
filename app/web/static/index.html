@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;600&display=swap">
+<link rel="stylesheet" href="assets/css/monetka.css">
+<title>Monetka</title>
+<meta name="description" content="Monetka: a digital wallet on a double-entry ledger">
+</head>
+<body>
+<a class="skip" href="#main" data-i18n="skip">Skip to content</a>
+<header class="topbar">
+  <a class="logo" href="index.html"><span class="coin" aria-hidden="true">₴</span>Monetka</a>
+  <button class="btn small ghost" type="button" data-action="lang" data-i18n="nav.lang">English</button>
+  <button class="btn small ghost" type="button" data-action="theme" data-i18n-label="nav.theme" aria-label="Switch theme"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+</header>
+<main id="main" class="auth">
+  <div class="auth-wrap">
+    <section>
+      <h1 data-i18n="auth.title"></h1>
+      <p class="lead" data-i18n="auth.lead"></p>
+      <ul class="facts">
+        <li data-i18n="auth.fact1"></li>
+        <li data-i18n="auth.fact2"></li>
+        <li data-i18n="auth.fact3"></li>
+      </ul>
+    </section>
+    <section class="card">
+      <div class="tabs" role="tablist">
+        <button type="button" role="tab" id="tab-in" aria-selected="true" aria-controls="auth-form" data-mode="in" data-i18n="auth.signin"></button>
+        <button type="button" role="tab" id="tab-up" aria-selected="false" aria-controls="auth-form" data-mode="up" data-i18n="auth.signup"></button>
+      </div>
+      <p class="demo-note" data-i18n="auth.demo"></p>
+      <form id="auth-form" role="tabpanel" aria-labelledby="tab-in" novalidate>
+        <div class="field">
+          <label for="email" data-i18n="auth.email"></label>
+          <input id="email" name="email" type="email" autocomplete="username" required>
+        </div>
+        <div class="field">
+          <label for="password" data-i18n="auth.password"></label>
+          <input id="password" name="password" type="password" autocomplete="current-password" minlength="8" required aria-describedby="password-hint">
+          <span class="hint" id="password-hint" data-i18n="auth.passwordHint"></span>
+        </div>
+        <p class="form-error" role="alert"></p>
+        <button class="btn primary" type="submit" data-i18n="auth.submitIn" style="width:100%"></button>
+      </form>
+    </section>
+  </div>
+</main>
+<footer class="site">
+  <a href="shop.html" data-i18n="nav.shop"></a>
+  <a href="ops.html" data-i18n="nav.ops"></a>
+  <a href="/docs" data-i18n="nav.api" id="api-link"></a>
+  <a href="https://github.com/ZamotVlad/monetka">GitHub</a>
+</footer>
+<script type="module" src="assets/js/auth.js"></script>
+</body>
+</html>
