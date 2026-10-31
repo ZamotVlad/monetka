@@ -20,6 +20,7 @@ from app.domain.ledger import PSP_ACCOUNT_ID, TransactionKind, move
 from app.domain.money import Money
 from app.main import create_app
 from app.services.ledger import LedgerService
+from app.services.merchants import MerchantService
 
 # Ryuk is the testcontainers reaper; the containers are stopped by the fixture anyway
 os.environ.setdefault("TESTCONTAINERS_RYUK_DISABLED", "true")
@@ -127,3 +128,11 @@ class Users:
 @pytest.fixture
 def users(client: AsyncClient, session_factory: async_sessionmaker[AsyncSession]) -> Users:
     return Users(client, session_factory)
+
+
+@pytest.fixture
+async def merchant(session_factory: async_sessionmaker[AsyncSession]) -> dict[str, str]:
+    async with UnitOfWork(session_factory) as uow:
+        _, api_key = await MerchantService(uow).create("Coffee Grain")
+        await uow.commit()
+    return {"X-API-Key": api_key}
