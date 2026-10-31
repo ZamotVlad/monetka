@@ -20,6 +20,9 @@ class Settings(BaseSettings):
     jwt_ttl_minutes: int = 60
     bcrypt_rounds: int = 12
 
+    auth_rate_limit_per_minute: int = 10
+    money_rate_limit_per_minute: int = 60
+
     @model_validator(mode="after")
     def _no_dev_secrets_in_production(self) -> Self:
         if self.environment == "production" and self.jwt_secret == DEV_JWT_SECRET:
