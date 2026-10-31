@@ -30,10 +30,12 @@ class LedgerRepository:
         kind: TransactionKind,
         postings: Sequence[Posting],
         details: dict[str, Any],
+        payment_id: UUID | None = None,
     ) -> LedgerTransaction:
         transaction = LedgerTransaction(
             kind=kind,
             details=details,
+            payment_id=payment_id,
             entries=[
                 LedgerEntry(account_id=posting.account_id, amount=posting.amount.amount)
                 for posting in postings

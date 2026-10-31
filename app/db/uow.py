@@ -6,6 +6,8 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from app.repositories.accounts import AccountRepository
 from app.repositories.idempotency import IdempotencyRepository
 from app.repositories.ledger import LedgerRepository
+from app.repositories.merchants import MerchantRepository
+from app.repositories.payments import PaymentRepository
 from app.repositories.users import UserRepository
 
 
@@ -22,6 +24,8 @@ class UnitOfWork:
     accounts: AccountRepository
     ledger: LedgerRepository
     idempotency: IdempotencyRepository
+    merchants: MerchantRepository
+    payments: PaymentRepository
 
     def __init__(self, session_factory: async_sessionmaker[AsyncSession]) -> None:
         self._session_factory = session_factory
@@ -32,6 +36,8 @@ class UnitOfWork:
         self.accounts = AccountRepository(self.session)
         self.ledger = LedgerRepository(self.session)
         self.idempotency = IdempotencyRepository(self.session)
+        self.merchants = MerchantRepository(self.session)
+        self.payments = PaymentRepository(self.session)
         return self
 
     async def __aexit__(

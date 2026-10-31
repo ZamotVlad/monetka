@@ -20,6 +20,9 @@ class Settings(BaseSettings):
     jwt_ttl_minutes: int = 60
     bcrypt_rounds: int = 12
 
+    payment_request_ttl_hours: int = 24
+    hold_ttl_days: int = 7
+
     auth_rate_limit_per_minute: int = 10
     money_rate_limit_per_minute: int = 60
 

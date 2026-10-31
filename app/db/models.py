@@ -7,6 +7,7 @@ from sqlalchemy import (
     CheckConstraint,
     ForeignKey,
     Identity,
+    Index,
     String,
     UniqueConstraint,
     false,
@@ -39,6 +40,7 @@ class Account(Base):
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
     kind: Mapped[str] = mapped_column(String(16))
     user_id: Mapped[UUID | None] = mapped_column(ForeignKey("users.id"))
+    merchant_id: Mapped[UUID | None] = mapped_column(ForeignKey("merchants.id"), unique=True)
     currency: Mapped[str] = mapped_column(String(3), default="UAH", server_default="UAH")
     # A cached sum of the entries, kept so a balance check is one row read, not a SUM
     balance: Mapped[int] = mapped_column(BigInteger, default=0, server_default="0")
@@ -51,6 +53,7 @@ class LedgerTransaction(Base):
 
     id: Mapped[int] = mapped_column(BigInteger, Identity(), primary_key=True)
     kind: Mapped[str] = mapped_column(String(16))
+    payment_id: Mapped[UUID | None] = mapped_column(ForeignKey("payments.id"), index=True)
     details: Mapped[dict[str, Any]] = mapped_column(
         default=dict, server_default=text("'{}'::jsonb")
     )
@@ -78,3 +81,30 @@ class IdempotencyKey(Base):
     status_code: Mapped[int | None]
     response_body: Mapped[dict[str, Any] | None]
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
+
+
+class Merchant(Base):
+    __tablename__ = "merchants"
+
+    id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
+    name: Mapped[str] = mapped_column(String(120))
+    api_key_hash: Mapped[str] = mapped_column(String(64), unique=True)
+    created_at: Mapped[datetime] = mapped_column(server_default=func.now())
+
+
+class Payment(Base):
+    __tablename__ = "payments"
+    # The expiry worker scans by status and deadline; without this it reads every payment
+    __table_args__ = (Index("ix_payments_status_expires_at", "status", "expires_at"),)
+
+    id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
+    merchant_id: Mapped[UUID] = mapped_column(ForeignKey("merchants.id"), index=True)
+    user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"), index=True)
+    amount: Mapped[int] = mapped_column(BigInteger)
+    description: Mapped[str] = mapped_column(String(140))
+    status: Mapped[str] = mapped_column(String(16))
+    expires_at: Mapped[datetime]
+    created_at: Mapped[datetime] = mapped_column(server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(server_default=func.now(), onupdate=func.now())
+
+    merchant: Mapped[Merchant] = relationship(lazy="joined", innerjoin=True)

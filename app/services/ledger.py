@@ -1,5 +1,6 @@
 from collections.abc import Sequence
 from typing import Any
+from uuid import UUID
 
 from app.db.models import LedgerTransaction
 from app.db.uow import UnitOfWork
@@ -19,6 +20,7 @@ class LedgerService:
         kind: TransactionKind,
         postings: Sequence[Posting],
         details: dict[str, Any] | None = None,
+        payment_id: UUID | None = None,
     ) -> LedgerTransaction:
         ledger.validate(postings)
         accounts = await self._uow.accounts.lock(posting.account_id for posting in postings)
@@ -31,4 +33,4 @@ class LedgerService:
         )
         for account in accounts.values():
             account.balance = new_balances[account.id]
-        return await self._uow.ledger.add(kind, postings, details or {})
+        return await self._uow.ledger.add(kind, postings, details or {}, payment_id)
