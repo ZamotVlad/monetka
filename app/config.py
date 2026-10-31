@@ -28,6 +28,10 @@ class Settings(BaseSettings):
     psp_secret: str = DEV_PSP_SECRET
     webhook_tolerance_seconds: int = 300
 
+    kafka_enabled: bool = True
+    kafka_bootstrap_servers: str = "localhost:9092"
+    reconciliation_interval_seconds: int = 300
+
     payment_request_ttl_hours: int = 24
     hold_ttl_days: int = 7
 

@@ -4,10 +4,30 @@ import asyncio
 import logging
 import signal
 
-from app.config import get_settings
+from aiokafka.errors import KafkaError
+
+from app.config import Settings, get_settings
 from app.db.session import create_engine, create_session_factory
+from app.messaging.kafka import KafkaPublisher
 from app.workers import jobs
 from app.workers.runner import every
+
+logger = logging.getLogger("app.workers")
+
+
+async def start_publisher(settings: Settings, stop: asyncio.Event) -> KafkaPublisher | None:
+    delay = 1.0
+    while not stop.is_set():
+        publisher = KafkaPublisher(settings.kafka_bootstrap_servers)
+        try:
+            await publisher.start()
+            return publisher
+        except KafkaError as error:
+            logger.warning("kafka unavailable (%s), retrying in %.0fs", error, delay)
+            await publisher.stop()
+            await asyncio.sleep(delay)
+            delay = min(delay * 2, 30)
+    return None
 
 
 async def main() -> None:
@@ -18,13 +38,30 @@ async def main() -> None:
     loop = asyncio.get_running_loop()
     for signum in (signal.SIGINT, signal.SIGTERM):
         loop.add_signal_handler(signum, stop.set)
+
+    publisher = await start_publisher(settings, stop)
     try:
-        await asyncio.gather(
-            every(
-                "expire-payments", 5, lambda: jobs.expire_payments(session_factory, settings), stop
-            ),
-        )
+        if publisher is not None:
+            await asyncio.gather(
+                every(
+                    "relay-outbox", 0.5, lambda: jobs.relay_outbox(session_factory, publisher), stop
+                ),
+                every(
+                    "expire-payments",
+                    5,
+                    lambda: jobs.expire_payments(session_factory, settings),
+                    stop,
+                ),
+                every(
+                    "reconcile",
+                    settings.reconciliation_interval_seconds,
+                    lambda: jobs.reconcile(session_factory),
+                    stop,
+                ),
+            )
     finally:
+        if publisher is not None:
+            await publisher.stop()
         await engine.dispose()
 
 
