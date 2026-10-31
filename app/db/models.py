@@ -67,3 +67,14 @@ class LedgerEntry(Base):
     transaction_id: Mapped[int] = mapped_column(ForeignKey("ledger_transactions.id"), index=True)
     account_id: Mapped[UUID] = mapped_column(ForeignKey("accounts.id"), index=True)
     amount: Mapped[int] = mapped_column(BigInteger)
+
+
+class IdempotencyKey(Base):
+    __tablename__ = "idempotency_keys"
+
+    scope: Mapped[str] = mapped_column(String(64), primary_key=True)
+    key: Mapped[str] = mapped_column(String(255), primary_key=True)
+    request_hash: Mapped[str] = mapped_column(String(64))
+    status_code: Mapped[int | None]
+    response_body: Mapped[dict[str, Any] | None]
+    created_at: Mapped[datetime] = mapped_column(server_default=func.now())
