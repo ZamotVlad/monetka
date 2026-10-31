@@ -9,7 +9,7 @@ repos:
     hooks:
       - id: mypy
         name: mypy
-        entry: uv run mypy app tests
+        entry: uv run mypy app tests psp_mock
         language: system
         types: [python]
         pass_filenames: false
