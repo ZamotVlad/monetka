@@ -18,6 +18,7 @@ from app.db.session import create_engine, create_session_factory
 from app.db.uow import UnitOfWork
 from app.domain.ledger import PSP_ACCOUNT_ID, TransactionKind, move
 from app.domain.money import Money
+from app.integrations.storage import MemoryStorage
 from app.main import create_app
 from app.realtime import Hub
 from app.services.ledger import LedgerService
@@ -92,6 +93,7 @@ def app(
     app.state.session_factory = session_factory
     app.state.redis = FakeAsyncRedis(server=FakeServer(), decode_responses=True)
     app.state.hub = Hub()
+    app.state.storage = MemoryStorage()
     return app
 
 
