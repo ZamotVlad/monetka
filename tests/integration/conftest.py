@@ -38,6 +38,9 @@ def database_url() -> Iterator[str]:
 
         container = PostgresContainer("postgres:16-alpine", driver="asyncpg").start()
     except Exception as error:  # docker missing or not running
+        # Locally a missing Docker skips these tests; in CI it must fail, not pass silently
+        if os.environ.get("CI"):
+            raise
         pytest.skip(f"PostgreSQL container unavailable: {error}")
     try:
         yield container.get_connection_url()
