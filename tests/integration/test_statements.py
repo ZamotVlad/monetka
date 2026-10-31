@@ -5,7 +5,7 @@ from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from app.integrations.storage import MemoryStorage
-from app.services.statements import month_bounds, previous_period
+from app.services.statements import month_bounds, previous_period, safe_cell
 from app.workers.jobs import monthly_statements
 from tests.integration.conftest import Users
 
@@ -59,3 +59,8 @@ async def test_monthly_job_skips_users_without_activity(
     await users.create("olena@example.com", balance=100)
     # All activity is in the current month, so last month has nothing to report
     assert await monthly_statements(session_factory, MemoryStorage()) == 0
+
+
+def test_cells_that_excel_would_run_as_formulas_are_escaped() -> None:
+    assert safe_cell('=HYPERLINK("http://evil")') == '\'=HYPERLINK("http://evil")'
+    assert safe_cell("note=for pizza") == "note=for pizza"

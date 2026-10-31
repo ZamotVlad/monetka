@@ -11,6 +11,15 @@ from app.domain.ledger import AccountKind
 from app.domain.money import Money
 from app.integrations.storage import FileStorage
 
+FORMULA_START = ("=", "+", "-", "@", "\t", "\r")
+
+
+def safe_cell(value: str) -> str:
+    """Notes and shop descriptions come from other people. In Excel a cell starting with
+    "=" is a formula, so "=HYPERLINK(...)" in a transfer note could run on open."""
+    return "'" + value if value.startswith(FORMULA_START) else value
+
+
 PERIOD = re.compile(r"^\d{4}-(0[1-9]|1[0-2])$")
 
 
@@ -51,7 +60,7 @@ class StatementService:
                 [
                     row.created_at.isoformat(timespec="seconds"),
                     row.kind,
-                    "; ".join(f"{k}={v}" for k, v in row.details.items() if v),
+                    safe_cell("; ".join(f"{k}={v}" for k, v in row.details.items() if v)),
                     Money(row.wallet_delta).to_decimal(),
                     Money(row.held_delta).to_decimal(),
                 ]
