@@ -16,13 +16,15 @@ logger = logging.getLogger(__name__)
 class RateLimit:
     """Fixed-window limiter in Redis: one counter per client per minute.
 
-    Clients are told apart by their token when they have one, by IP otherwise.
+    Sign-in is counted per IP. Money operations are counted per token, so people behind
+    one office NAT do not share a limit.
     If Redis is down the request goes through: a missing limiter is better than a
     wallet nobody can use.
     """
 
-    def __init__(self, name: str, setting: str, window_seconds: int = 60) -> None:
+    def __init__(self, name: str, setting: str, by_token: bool, window_seconds: int = 60) -> None:
         self._name = name
+        self._by_token = by_token
         self._setting = setting
         self._window = window_seconds
 
@@ -50,13 +52,14 @@ class RateLimit:
                 headers={"Retry-After": str(retry_after)},
             )
 
-    @staticmethod
-    def _client_id(request: Request) -> str:
-        token = request.headers.get("authorization")
+    def _client_id(self, request: Request) -> str:
+        # Never key sign-in by a header the client controls: a random Authorization
+        # header on every attempt would give a fresh counter each time
+        token = request.headers.get("authorization") if self._by_token else None
         if token:
             return hashlib.sha256(token.encode()).hexdigest()[:16]
         return request.client.host if request.client else "unknown"
 
 
-auth_limit = RateLimit("auth", "auth_rate_limit_per_minute")
-money_limit = RateLimit("money", "money_rate_limit_per_minute")
+auth_limit = RateLimit("auth", "auth_rate_limit_per_minute", by_token=False)
+money_limit = RateLimit("money", "money_rate_limit_per_minute", by_token=True)
