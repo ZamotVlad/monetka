@@ -5,13 +5,26 @@ description = "Digital wallet with merchant payments on a double-entry ledger"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "aioboto3>=13.2",
+    "aiokafka>=0.12",
     "alembic>=1.14",
     "asyncpg>=0.30",
+    "bcrypt>=4.2",
+    "email-validator>=2.2",
     "fastapi>=0.115",
+    "httpx>=0.28",
+    "prometheus-client>=0.21",
     "pydantic-settings>=2.6",
+    "pyjwt>=2.10",
+    "python-multipart>=0.0.20",
     "redis>=5.2",
     "sqlalchemy[asyncio]>=2.0.36",
     "uvicorn[standard]>=0.32",
+]
+
+[project.optional-dependencies]
+load = [
+    "locust>=2.32",
 ]
 
 [tool.uv]
@@ -29,6 +42,10 @@ python_version = "3.12"
 strict = true
 plugins = ["pydantic.mypy"]
 
+[[tool.mypy.overrides]]
+module = ["aiokafka.*", "aioboto3.*", "testcontainers.*", "locust.*"]
+ignore_missing_imports = true
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "session"
@@ -37,10 +54,13 @@ testpaths = ["tests"]
 
 [dependency-groups]
 dev = [
+    "fakeredis>=2.26",
     "httpx>=0.28",
+    "hypothesis>=6.120",
     "mypy>=1.13",
     "pre-commit>=4.0",
     "pytest>=8.3",
     "pytest-asyncio>=0.24",
     "ruff>=0.8",
+    "testcontainers[postgres]>=4.9",
 ]
