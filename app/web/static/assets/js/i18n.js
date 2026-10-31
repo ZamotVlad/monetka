@@ -1,0 +1,325 @@
+// Two languages, one dictionary. Elements opt in with data-i18n="key".
+
+const dict = {
+  uk: {
+    "nav.signout": "Вийти",
+    "nav.lang": "English",
+    "nav.theme": "Змінити тему",
+    "nav.wallet": "Гаманець",
+    "nav.ops": "Панель оператора",
+    "nav.shop": "Демо-магазин",
+    "nav.api": "API",
+    "skip": "До змісту",
+
+    "auth.title": "Гаманець, де кожна копійка на своєму місці",
+    "auth.lead": "Поповнюйте з картки, переказуйте друзям за email і платіть у магазинах із резервом: гроші списуються лише тоді, коли магазин виконав замовлення.",
+    "auth.fact1": "Подвійний запис: гроші не з'являються і не зникають, вони тільки переходять",
+    "auth.fact2": "Повторне натискання не спише двічі",
+    "auth.fact3": "Баланс оновлюється наживо",
+    "auth.signin": "Вхід",
+    "auth.signup": "Реєстрація",
+    "auth.email": "Email",
+    "auth.password": "Пароль",
+    "auth.passwordHint": "Щонайменше 8 символів",
+    "auth.submitIn": "Увійти",
+    "auth.submitUp": "Створити гаманець",
+    "auth.demo": "Демо: olena@monetka.demo, пароль demo-password",
+
+    "wallet.available": "Доступно",
+    "wallet.held": "Заблоковано",
+    "wallet.total": "Усього",
+    "wallet.heldHint": "Зарезервовано для покупок, ще не списано",
+    "wallet.topup": "Поповнити",
+    "wallet.send": "Переказати",
+    "wallet.withdraw": "Вивести",
+    "wallet.requests": "Чекають на вашу відповідь",
+    "wallet.noRequests": "Немає запитів на оплату.",
+    "wallet.reserved": "Зарезервовано",
+    "wallet.noReserved": "Нічого не зарезервовано.",
+    "wallet.history": "Історія",
+    "wallet.noHistory": "Тут з'являться ваші операції.",
+    "wallet.more": "Показати ще",
+    "wallet.statements": "Місячні виписки",
+    "wallet.noStatements": "Виписок ще немає.",
+    "wallet.makeStatement": "Виписка за цей місяць",
+    "wallet.download": "CSV",
+    "wallet.ops": "{n} операцій",
+
+    "request.asks": "просить {amount}",
+    "request.explain": "Якщо підтвердите, гроші зарезервуються, а не спишуться. Магазин спише їх після виконання замовлення, інакше вони повернуться до вас через 7 днів.",
+    "request.until": "Чекає відповіді до {date}",
+    "request.confirm": "Підтвердити",
+    "request.decline": "Відхилити",
+    "request.confirmed": "Підтверджено: {amount} зарезервовано для {shop}",
+    "request.declined": "Запит відхилено",
+    "reserve.returns": "Повернеться {date}, якщо магазин не спише",
+
+    "live.on": "наживо",
+    "live.off": "офлайн",
+
+    "dialog.topup": "Поповнення з картки",
+    "dialog.topupHint": "Відкриється сторінка платіжного провайдера",
+    "dialog.send": "Переказ за email",
+    "dialog.withdraw": "Вивести на картку",
+    "dialog.amount": "Сума, ₴",
+    "dialog.to": "Email отримувача",
+    "dialog.note": "Коментар (необов'язково)",
+    "dialog.card": "Останні 4 цифри картки",
+    "dialog.cancel": "Скасувати",
+    "dialog.continue": "Продовжити",
+    "dialog.sendBtn": "Надіслати",
+    "dialog.withdrawBtn": "Вивести",
+
+    "deposit.waiting": "Чекаємо підтвердження від банку…",
+    "deposit.succeeded": "Поповнення на {amount} зараховано",
+    "deposit.failed": "Банк відхилив поповнення. Гроші не списано.",
+
+    "kind.deposit": "Поповнення з картки •••• {card}",
+    "kind.withdrawal": "Виведення на картку •••• {card}",
+    "kind.transferOut": "Переказ для {to}",
+    "kind.transferIn": "Переказ від {from}",
+    "kind.hold": "Резерв для {merchant}",
+    "kind.capture": "Оплата: {merchant}",
+    "kind.release": "Резерв повернено: {merchant}",
+    "tag.reserved": "заблоковано",
+    "tag.paid": "із резерву",
+
+    "toast.sent": "Надіслано {amount}",
+    "toast.withdrawn": "Виведено {amount}",
+    "toast.statement": "Виписку сформовано",
+
+    "error.insufficient_funds": "Недостатньо коштів",
+    "error.not_found": "Не знайдено",
+    "error.self_transfer": "Не можна переказати собі",
+    "error.email_taken": "Цей email уже зареєстрований",
+    "error.invalid_credentials": "Неправильний email або пароль",
+    "error.rate_limited": "Забагато спроб, зачекайте хвилинку",
+    "error.invalid_transition": "Цей запит уже закрито",
+    "error.validation_error": "Перевірте поля форми",
+    "error.network": "Немає з'єднання з сервером",
+    "error.unknown": "Щось пішло не так",
+
+    "ops.title": "Панель оператора",
+    "ops.users": "Користувачі",
+    "ops.wallets": "У гаманцях",
+    "ops.held": "У резерві",
+    "ops.merchants": "У магазинів",
+    "ops.provider": "Провайдер",
+    "ops.books": "Сума книги",
+    "ops.backlog": "Outbox у черзі",
+    "ops.online": "Онлайн",
+    "ops.reconciliation": "Звірка",
+    "ops.runNow": "Звірити зараз",
+    "ops.balanced": "Книга збалансована",
+    "ops.unbalanced": "Розбіжність!",
+    "ops.never": "Ще не запускалась",
+    "ops.checked": "{n} рахунків перевірено, {date}",
+    "ops.journal": "Журнал проводок",
+    "ops.journalHint": "Кожна операція в книзі: дебет зменшує рахунок, кредит збільшує. Сума кожної операції дорівнює нулю.",
+    "ops.colAccount": "Рахунок",
+    "ops.colOwner": "Власник",
+    "ops.colDebit": "Дебет",
+    "ops.colCredit": "Кредит",
+    "ops.balancedRow": "Σ = 0 ✓",
+    "ops.denied": "Ця сторінка лише для операторів.",
+
+    "shop.title": "Демо-магазин",
+    "shop.lead": "Так магазин бачить Monetka через API: створює запит на оплату, а після підтвердження покупцем списує або скасовує резерв.",
+    "shop.key": "API-ключ магазину",
+    "shop.keyHint": "Його друкує команда seed-demo або create-merchant",
+    "shop.customer": "Email покупця",
+    "shop.description": "Що купують",
+    "shop.request": "Виставити рахунок",
+    "shop.payments": "Платежі",
+    "shop.capture": "Списати",
+    "shop.void": "Скасувати",
+    "shop.none": "Платежів ще немає.",
+
+    "status.pending": "чекає",
+    "status.authorized": "зарезервовано",
+    "status.captured": "оплачено",
+    "status.declined": "відхилено",
+    "status.voided": "скасовано",
+    "status.expired": "прострочено",
+  },
+  en: {
+    "nav.signout": "Sign out",
+    "nav.lang": "Українська",
+    "nav.theme": "Switch theme",
+    "nav.wallet": "Wallet",
+    "nav.ops": "Operator panel",
+    "nav.shop": "Demo shop",
+    "nav.api": "API",
+    "skip": "Skip to content",
+
+    "auth.title": "A wallet where every kopiyka is accounted for",
+    "auth.lead": "Top up from a card, send money by email and pay shops with a reserve: the money leaves only when the shop has delivered.",
+    "auth.fact1": "Double-entry: money is never created or lost, it only moves",
+    "auth.fact2": "A second tap never charges twice",
+    "auth.fact3": "Your balance updates live",
+    "auth.signin": "Sign in",
+    "auth.signup": "Sign up",
+    "auth.email": "Email",
+    "auth.password": "Password",
+    "auth.passwordHint": "At least 8 characters",
+    "auth.submitIn": "Sign in",
+    "auth.submitUp": "Create wallet",
+    "auth.demo": "Demo: olena@monetka.demo, password demo-password",
+
+    "wallet.available": "Available",
+    "wallet.held": "Reserved",
+    "wallet.total": "Total",
+    "wallet.heldHint": "Set aside for purchases, not charged yet",
+    "wallet.topup": "Top up",
+    "wallet.send": "Send",
+    "wallet.withdraw": "Withdraw",
+    "wallet.requests": "Waiting for your answer",
+    "wallet.noRequests": "No payment requests.",
+    "wallet.reserved": "Reserved",
+    "wallet.noReserved": "Nothing is reserved.",
+    "wallet.history": "History",
+    "wallet.noHistory": "Your operations will show up here.",
+    "wallet.more": "Show more",
+    "wallet.statements": "Monthly statements",
+    "wallet.noStatements": "No statements yet.",
+    "wallet.makeStatement": "Statement for this month",
+    "wallet.download": "CSV",
+    "wallet.ops": "{n} operations",
+
+    "request.asks": "asks for {amount}",
+    "request.explain": "If you confirm, the money is reserved, not charged. The shop charges it once your order is done; otherwise it comes back to you in 7 days.",
+    "request.until": "Waiting for your answer until {date}",
+    "request.confirm": "Confirm",
+    "request.decline": "Decline",
+    "request.confirmed": "Confirmed: {amount} reserved for {shop}",
+    "request.declined": "Request declined",
+    "reserve.returns": "Comes back on {date} unless the shop charges it",
+
+    "live.on": "live",
+    "live.off": "offline",
+
+    "dialog.topup": "Top up from a card",
+    "dialog.topupHint": "You will go to the payment provider's page",
+    "dialog.send": "Send by email",
+    "dialog.withdraw": "Withdraw to a card",
+    "dialog.amount": "Amount, ₴",
+    "dialog.to": "Recipient's email",
+    "dialog.note": "Note (optional)",
+    "dialog.card": "Last 4 digits of the card",
+    "dialog.cancel": "Cancel",
+    "dialog.continue": "Continue",
+    "dialog.sendBtn": "Send",
+    "dialog.withdrawBtn": "Withdraw",
+
+    "deposit.waiting": "Waiting for the bank to confirm…",
+    "deposit.succeeded": "Top-up of {amount} received",
+    "deposit.failed": "The bank declined the top-up. Nothing was charged.",
+
+    "kind.deposit": "Top-up from card •••• {card}",
+    "kind.withdrawal": "Withdrawal to card •••• {card}",
+    "kind.transferOut": "Sent to {to}",
+    "kind.transferIn": "Received from {from}",
+    "kind.hold": "Reserved for {merchant}",
+    "kind.capture": "Paid: {merchant}",
+    "kind.release": "Reserve returned: {merchant}",
+    "tag.reserved": "reserved",
+    "tag.paid": "from reserve",
+
+    "toast.sent": "Sent {amount}",
+    "toast.withdrawn": "Withdrew {amount}",
+    "toast.statement": "Statement is ready",
+
+    "error.insufficient_funds": "Not enough money",
+    "error.not_found": "Not found",
+    "error.self_transfer": "You cannot send money to yourself",
+    "error.email_taken": "This email is already registered",
+    "error.invalid_credentials": "Wrong email or password",
+    "error.rate_limited": "Too many attempts, wait a minute",
+    "error.invalid_transition": "This request is already closed",
+    "error.validation_error": "Check the form fields",
+    "error.network": "No connection to the server",
+    "error.unknown": "Something went wrong",
+
+    "ops.title": "Operator panel",
+    "ops.users": "Users",
+    "ops.wallets": "In wallets",
+    "ops.held": "Reserved",
+    "ops.merchants": "With shops",
+    "ops.provider": "Provider",
+    "ops.books": "Books total",
+    "ops.backlog": "Outbox backlog",
+    "ops.online": "Online",
+    "ops.reconciliation": "Reconciliation",
+    "ops.runNow": "Reconcile now",
+    "ops.balanced": "Books balance",
+    "ops.unbalanced": "Mismatch!",
+    "ops.never": "Has not run yet",
+    "ops.checked": "{n} accounts checked, {date}",
+    "ops.journal": "Journal",
+    "ops.journalHint": "Every operation in the books: a debit takes from an account, a credit adds to it. Each operation sums to zero.",
+    "ops.colAccount": "Account",
+    "ops.colOwner": "Owner",
+    "ops.colDebit": "Debit",
+    "ops.colCredit": "Credit",
+    "ops.balancedRow": "Σ = 0 ✓",
+    "ops.denied": "This page is for operators only.",
+
+    "shop.title": "Demo shop",
+    "shop.lead": "This is Monetka from a shop's side: it requests a payment over the API, and after the customer confirms, it charges or releases the reserve.",
+    "shop.key": "Shop API key",
+    "shop.keyHint": "Printed by the seed-demo or create-merchant command",
+    "shop.customer": "Customer's email",
+    "shop.description": "What is being bought",
+    "shop.request": "Request payment",
+    "shop.payments": "Payments",
+    "shop.capture": "Charge",
+    "shop.void": "Cancel",
+    "shop.none": "No payments yet.",
+
+    "status.pending": "pending",
+    "status.authorized": "reserved",
+    "status.captured": "paid",
+    "status.declined": "declined",
+    "status.voided": "cancelled",
+    "status.expired": "expired",
+  },
+};
+
+function initialLang() {
+  try {
+    const saved = localStorage.getItem("monetka.lang");
+    if (saved in dict) return saved;
+  } catch {
+    // storage can be blocked; the browser language still works
+  }
+  return navigator.language?.toLowerCase().startsWith("uk") ? "uk" : "en";
+}
+
+export let lang = initialLang();
+
+export function t(key, vars = {}) {
+  const text = dict[lang][key] ?? dict.en[key] ?? key;
+  return text.replace(/\{(\w+)\}/g, (_, name) => vars[name] ?? "");
+}
+
+export function applyTranslations(root = document) {
+  document.documentElement.lang = lang;
+  for (const el of root.querySelectorAll("[data-i18n]")) el.textContent = t(el.dataset.i18n);
+  for (const el of root.querySelectorAll("[data-i18n-placeholder]")) {
+    el.placeholder = t(el.dataset.i18nPlaceholder);
+  }
+  for (const el of root.querySelectorAll("[data-i18n-label]")) {
+    el.setAttribute("aria-label", t(el.dataset.i18nLabel));
+  }
+}
+
+export function toggleLang() {
+  lang = lang === "uk" ? "en" : "uk";
+  try {
+    localStorage.setItem("monetka.lang", lang);
+  } catch {
+    // not saved, still switched for this page
+  }
+  applyTranslations();
+  window.dispatchEvent(new Event("langchange"));
+}

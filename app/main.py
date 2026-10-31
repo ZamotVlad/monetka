@@ -1,8 +1,10 @@
 import asyncio
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager, suppress
+from pathlib import Path
 
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 
 from app.api import (
     auth,
@@ -25,6 +27,8 @@ from app.integrations.storage import S3Storage
 from app.messaging.kafka import consume_forever
 from app.observability import RequestContextMiddleware, configure_logging
 from app.realtime import Hub
+
+STATIC_DIR = Path(__file__).parent / "web" / "static"
 
 
 @asynccontextmanager
@@ -75,6 +79,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     ):
         app.include_router(router, prefix="/api/v1")
     app.include_router(metrics.router)
+    # Last, so API routes win; html=True serves index.html for "/"
+    app.mount("/", StaticFiles(directory=STATIC_DIR, html=True), name="web")
     return app
 
 
