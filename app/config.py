@@ -5,6 +5,7 @@ from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 DEV_JWT_SECRET = "local-dev-jwt-secret-change-me-in-production"
+DEV_PSP_SECRET = "local-dev-psp-secret-change-me-in-production"
 
 
 class Settings(BaseSettings):
@@ -20,6 +21,13 @@ class Settings(BaseSettings):
     jwt_ttl_minutes: int = 60
     bcrypt_rounds: int = 12
 
+    public_url: str = "http://localhost:8000"
+    psp_checkout_url: str = "http://localhost:8001/checkout"
+    # Where the provider sends webhooks; inside Docker that is the api service, not localhost
+    psp_callback_url: str = "http://localhost:8000/api/v1/webhooks/psp"
+    psp_secret: str = DEV_PSP_SECRET
+    webhook_tolerance_seconds: int = 300
+
     payment_request_ttl_hours: int = 24
     hold_ttl_days: int = 7
 
@@ -28,7 +36,9 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def _no_dev_secrets_in_production(self) -> Self:
-        if self.environment == "production" and self.jwt_secret == DEV_JWT_SECRET:
+        if self.environment == "production" and (
+            self.jwt_secret == DEV_JWT_SECRET or self.psp_secret == DEV_PSP_SECRET
+        ):
             raise ValueError("Set real secrets before running in production")
         return self
 
