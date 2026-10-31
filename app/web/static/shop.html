@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;600&display=swap">
+<link rel="stylesheet" href="assets/css/monetka.css">
+<title>Monetka · Demo shop</title>
+</head>
+<body>
+<a class="skip" href="#main" data-i18n="skip">Skip to content</a>
+<header class="topbar">
+  <a class="logo" href="index.html"><span class="coin" aria-hidden="true">₴</span>Monetka</a>
+  <span class="who" data-i18n="shop.title"></span>
+  <button class="btn small ghost" type="button" data-action="lang" data-i18n="nav.lang">English</button>
+  <button class="btn small ghost" type="button" data-action="theme" data-i18n-label="nav.theme" aria-label="Switch theme"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+</header>
+<main id="main" class="page">
+  <div class="grid">
+    <section class="card" aria-labelledby="payments-title">
+      <h2 id="payments-title" data-i18n="shop.payments"></h2>
+      <ul class="history" id="payments"></ul>
+    </section>
+    <aside class="card">
+      <h2 data-i18n="shop.title"></h2>
+      <p class="muted" data-i18n="shop.lead"></p>
+      <form id="request" novalidate>
+        <div class="field">
+          <label for="key" data-i18n="shop.key"></label>
+          <input id="key" name="key" autocomplete="off" required aria-describedby="key-hint">
+          <span class="hint" id="key-hint" data-i18n="shop.keyHint"></span>
+        </div>
+        <div class="field">
+          <label for="customer" data-i18n="shop.customer"></label>
+          <input id="customer" name="customer" type="email" value="olena@monetka.demo" required>
+        </div>
+        <div class="field">
+          <label for="amount" data-i18n="dialog.amount"></label>
+          <input class="money" id="amount" name="amount" inputmode="decimal" value="86.00" required>
+        </div>
+        <div class="field">
+          <label for="description" data-i18n="shop.description"></label>
+          <input id="description" name="description" maxlength="140" value="Лате і круасан" required>
+        </div>
+        <p class="form-error" role="alert"></p>
+        <button class="btn primary" type="submit" data-i18n="shop.request" style="width:100%"></button>
+      </form>
+    </aside>
+  </div>
+</main>
+<script type="module" src="assets/js/shop.js"></script>
+</body>
+</html>
