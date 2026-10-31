@@ -12,10 +12,22 @@ const $ = (id) => document.getElementById(id);
 const state = { me: null, history: [], nextBefore: null, pending: [], reserved: [], statements: [] };
 
 /**
- * The books store signed postings; people want sentences. Each operation kind becomes one
- * line in plain words, and the amount shows what happened to the money they can spend.
+ * The books store signed postings; people want sentences. The list shows what happened
+ * to the money they can spend. A shop purchase is one line whose label follows the
+ * payment: reserved, then paid or cancelled. The capture itself is hidden, because it
+ * only moves money from the reserve to the shop and does not touch "available" again;
+ * showing it as a second −86 would look like being charged twice.
  */
-function describe(item) {
+function paymentOutcomes(items) {
+  const outcomes = {};
+  for (const item of items) {
+    if (item.kind === "capture") outcomes[item.details.payment_id] = "paid";
+    if (item.kind === "release") outcomes[item.details.payment_id] = "cancelled";
+  }
+  return outcomes;
+}
+
+function describe(item, outcomes) {
   const d = item.details;
   switch (item.kind) {
     case "deposit":
@@ -33,10 +45,16 @@ function describe(item) {
         amount: item.wallet_delta,
       };
     }
-    case "hold":
-      return { title: t("kind.hold", { merchant: d.merchant }), note: d.description, amount: item.wallet_delta, tag: t("tag.reserved"), held: true };
-    case "capture":
-      return { title: t("kind.capture", { merchant: d.merchant }), note: d.description, amount: item.held_delta, tag: t("tag.paid") };
+    case "hold": {
+      const outcome = outcomes[d.payment_id];
+      return {
+        title: t("kind.hold", { merchant: d.merchant }),
+        note: d.description,
+        amount: item.wallet_delta,
+        tag: t(outcome === "paid" ? "tag.paid" : outcome === "cancelled" ? "tag.cancelled" : "tag.reserved"),
+        style: outcome ? (outcome === "paid" ? "out" : "muted") : "held",
+      };
+    }
     case "release":
       return { title: t("kind.release", { merchant: d.merchant }), note: d.description, amount: item.wallet_delta };
     default:
@@ -55,10 +73,12 @@ function renderHistory() {
   if (!state.history.length) {
     list.innerHTML = `<li class="empty">${t("wallet.noHistory")}</li>`;
   } else {
+    const outcomes = paymentOutcomes(state.history);
     list.innerHTML = state.history
+      .filter((item) => item.kind !== "capture")
       .map((item) => {
-        const line = describe(item);
-        const direction = line.held ? "held" : line.amount > 0 ? "in" : "out";
+        const line = describe(item, outcomes);
+        const direction = line.style ?? (line.amount > 0 ? "in" : "out");
         return `<li>
           <time datetime="${item.created_at}">${shortDate(item.created_at)}</time>
           <div class="what"><strong>${escapeHtml(line.title)}</strong>${line.note ? `<span>${escapeHtml(line.note)}</span>` : ""}</div>
