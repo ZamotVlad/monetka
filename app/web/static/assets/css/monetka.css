@@ -132,9 +132,10 @@ a { color: inherit; text-underline-offset: 3px; }
 .btn[disabled] { opacity: .55; cursor: progress; }
 .btn.primary { background: var(--ink); color: var(--paper); }
 .btn.good { background: var(--green); color: var(--card); border-color: var(--ink); }
-.btn.small { min-height: 36px; padding: 6px 12px; font-size: 13px; box-shadow: 2px 2px 0 var(--ink); }
-.btn.ghost { box-shadow: none; }
-.btn svg { width: 18px; height: 18px; }
+.btn.small { min-height: 36px; height: 36px; padding: 0 12px; font-size: 13px; box-shadow: 2px 2px 0 var(--ink); }
+.btn.ghost, .btn.ghost:hover, .btn.ghost:active { box-shadow: none; transform: none; }
+.btn svg { display: block; width: 18px; height: 18px; flex: none; }
+.tools .btn { vertical-align: middle; }
 
 .field { display: grid; gap: 6px; margin-bottom: 16px; }
 .field label { font: 600 13px var(--mono); letter-spacing: .04em; }
