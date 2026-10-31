@@ -85,7 +85,15 @@ export function setupChrome() {
       // not remembered, still applied
     }
   });
-  document.querySelector("[data-action=signout]")?.addEventListener("click", () => {
+  // The sign-in page is the wallet's front door
+  const file = location.pathname.split("/").pop() || "index.html";
+  const page = file === "index.html" ? "app.html" : file;
+  for (const link of document.querySelectorAll(".mainnav a")) {
+    if (link.getAttribute("href") === page) link.setAttribute("aria-current", "page");
+  }
+  const signout = document.querySelector("[data-action=signout]");
+  if (signout) signout.hidden = !session.token;
+  signout?.addEventListener("click", () => {
     session.clear();
     location.href = "index.html";
   });

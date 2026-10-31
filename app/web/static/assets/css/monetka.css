@@ -90,7 +90,7 @@ a { color: inherit; text-underline-offset: 3px; }
 }
 
 .logo {
-  display: inline-flex; align-items: center; gap: 10px; margin-right: auto;
+  display: inline-flex; align-items: center; gap: 10px;
   font: 700 18px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase;
   text-decoration: none;
 }
@@ -102,11 +102,19 @@ a { color: inherit; text-underline-offset: 3px; }
 }
 
 .badge {
-  font: 600 12px var(--mono); padding: 4px 8px; margin-right: auto;
+  font: 600 12px var(--mono); padding: 4px 8px;
   border: 2px dashed var(--ink); background: var(--amber-soft);
 }
-.logo + .badge { margin-left: -4px; }
-.topbar:has(.badge) .logo { margin-right: 0; }
+
+.mainnav { display: flex; gap: 4px; flex-wrap: wrap; margin-left: 8px; }
+.mainnav a {
+  font: 600 14px var(--mono); text-decoration: none; padding: 8px 10px;
+  border-bottom: 3px solid transparent;
+}
+.mainnav a:hover { border-bottom-color: var(--rule); }
+.mainnav a[aria-current="page"] { border-bottom-color: var(--ink); }
+
+.tools { display: flex; align-items: center; gap: 10px; margin-left: auto; flex-wrap: wrap; }
 
 .topbar .who { font: 13px var(--mono); color: var(--muted); }
 
@@ -286,7 +294,13 @@ table.journal { width: 100%; border-collapse: collapse; font: 14px var(--mono); 
 .stepper output { min-width: 1.5em; text-align: center; font: 600 15px var(--mono); }
 .cart-total { display: flex; justify-content: space-between; font-family: var(--mono); margin: 0 0 16px; }
 
+.steps { margin: 0 0 18px; padding-left: 20px; font-size: 14px; display: grid; gap: 4px; }
+
 footer.site { max-width: 1120px; margin: 0 auto; padding: 0 24px 32px; font: 13px var(--mono); color: var(--muted); display: flex; gap: 16px; flex-wrap: wrap; }
+
+@media (max-width: 1100px) {
+  .topbar .who { display: none; }
+}
 
 @media (max-width: 900px) {
   .grid, .auth-wrap { grid-template-columns: 1fr; }
@@ -296,11 +310,19 @@ footer.site { max-width: 1120px; margin: 0 auto; padding: 0 24px 32px; font: 13p
 @media (max-width: 520px) {
   .topbar { padding: 12px 16px; }
   .badge {
-  font: 600 12px var(--mono); padding: 4px 8px; margin-right: auto;
+  font: 600 12px var(--mono); padding: 4px 8px;
   border: 2px dashed var(--ink); background: var(--amber-soft);
 }
-.logo + .badge { margin-left: -4px; }
-.topbar:has(.badge) .logo { margin-right: 0; }
+
+.mainnav { display: flex; gap: 4px; flex-wrap: wrap; margin-left: 8px; }
+.mainnav a {
+  font: 600 14px var(--mono); text-decoration: none; padding: 8px 10px;
+  border-bottom: 3px solid transparent;
+}
+.mainnav a:hover { border-bottom-color: var(--rule); }
+.mainnav a[aria-current="page"] { border-bottom-color: var(--ink); }
+
+.tools { display: flex; align-items: center; gap: 10px; margin-left: auto; flex-wrap: wrap; }
 
 .topbar .who { display: none; }
   .page { padding: 20px 16px 48px; }

@@ -15,12 +15,18 @@
 <header class="topbar">
   <a class="logo" href="app.html"><span class="coin" aria-hidden="true">₴</span>Monetka</a>
   <span class="badge" data-i18n="nav.badge">Learning project · no real money</span>
-  <span class="live" id="live" data-state="off" data-i18n="live.off"></span>
-  <span class="who" id="who"></span>
-  <a class="btn small ghost" href="ops.html" id="ops-link" hidden data-i18n="nav.ops"></a>
-  <button class="btn small ghost" type="button" data-action="lang" data-i18n="nav.lang">English</button>
-  <button class="btn small ghost" type="button" data-action="theme" data-i18n-label="nav.theme" aria-label="Switch theme"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
-  <button class="btn small" type="button" data-action="signout" data-i18n="nav.signout"></button>
+  <nav class="mainnav" data-i18n-label="nav.sections" aria-label="Sections">
+    <a href="app.html" data-i18n="nav.wallet">Wallet</a>
+    <a href="shop.html" data-i18n="nav.shop">Demo shop</a>
+    <a href="ops.html" data-i18n="nav.ops">Operator panel</a>
+  </nav>
+  <div class="tools">
+    <span class="live" id="live" data-state="off" data-i18n="live.off"></span>
+    <span class="who" id="who"></span>
+    <button class="btn small ghost" type="button" data-action="lang" data-i18n="nav.lang">English</button>
+    <button class="btn small ghost" type="button" data-action="theme" data-i18n-label="nav.theme" aria-label="Switch theme"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+    <button class="btn small" type="button" data-action="signout" data-i18n="nav.signout" hidden></button>
+  </div>
 </header>
 
 <main id="main" class="page">
@@ -98,7 +104,11 @@
     <h2 id="send-title" data-i18n="dialog.send"></h2>
     <div class="field">
       <label for="send-to" data-i18n="dialog.to"></label>
-      <input id="send-to" name="to" type="email" autocomplete="email" required>
+      <input id="send-to" name="to" type="email" autocomplete="email" list="people" required>
+      <datalist id="people">
+        <option value="taras@monetka.demo">
+        <option value="olena@monetka.demo">
+      </datalist>
     </div>
     <div class="field">
       <label for="send-amount" data-i18n="dialog.amount"></label>

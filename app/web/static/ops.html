@@ -15,15 +15,24 @@
 <header class="topbar">
   <a class="logo" href="app.html"><span class="coin" aria-hidden="true">₴</span>Monetka</a>
   <span class="badge" data-i18n="nav.badge">Learning project · no real money</span>
-  <span class="who" data-i18n="ops.title"></span>
-  <a class="btn small ghost" href="app.html" data-i18n="nav.wallet"></a>
-  <button class="btn small ghost" type="button" data-action="lang" data-i18n="nav.lang">English</button>
-  <button class="btn small ghost" type="button" data-action="theme" data-i18n-label="nav.theme" aria-label="Switch theme"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
-  <button class="btn small" type="button" data-action="signout" data-i18n="nav.signout"></button>
+  <nav class="mainnav" data-i18n-label="nav.sections" aria-label="Sections">
+    <a href="app.html" data-i18n="nav.wallet">Wallet</a>
+    <a href="shop.html" data-i18n="nav.shop">Demo shop</a>
+    <a href="ops.html" data-i18n="nav.ops">Operator panel</a>
+  </nav>
+  <div class="tools">
+    <button class="btn small ghost" type="button" data-action="lang" data-i18n="nav.lang">English</button>
+    <button class="btn small ghost" type="button" data-action="theme" data-i18n-label="nav.theme" aria-label="Switch theme"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+    <button class="btn small" type="button" data-action="signout" data-i18n="nav.signout" hidden></button>
+  </div>
 </header>
 <main id="main" class="page stack">
   <p class="banner warn" id="denied" hidden data-i18n="ops.denied"></p>
   <button class="btn primary" type="button" id="switch" hidden data-i18n="ops.signInAs" style="justify-self:start"></button>
+  <section class="card" aria-labelledby="about-title">
+    <h2 id="about-title" data-i18n="ops.aboutTitle"></h2>
+    <p class="muted" data-i18n="ops.about" style="margin:0"></p>
+  </section>
   <section aria-label="Overview" class="tiles" id="tiles"></section>
   <section class="card" aria-labelledby="rec-title">
     <h2 id="rec-title" data-i18n="ops.reconciliation"></h2>

@@ -305,7 +305,6 @@ async function start() {
   state.me = me;
   $("test-money").hidden = !config.test_money;
   $("who").textContent = state.me.email;
-  $("ops-link").hidden = !state.me.is_operator;
   await refresh();
   const deposit = new URLSearchParams(location.search).get("deposit");
   if (deposit) followDeposit(deposit);

@@ -13,21 +13,29 @@
 <body>
 <a class="skip" href="#main" data-i18n="skip">Skip to content</a>
 <header class="topbar">
-  <a class="logo" href="index.html"><span class="coin" aria-hidden="true">₴</span>Monetka</a>
+  <a class="logo" href="app.html"><span class="coin" aria-hidden="true">₴</span>Monetka</a>
   <span class="badge" data-i18n="nav.badge">Learning project · no real money</span>
-  <span class="who" data-i18n="shop.title"></span>
-  <button class="btn small ghost" type="button" data-action="lang" data-i18n="nav.lang">English</button>
-  <button class="btn small ghost" type="button" data-action="theme" data-i18n-label="nav.theme" aria-label="Switch theme"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+  <nav class="mainnav" data-i18n-label="nav.sections" aria-label="Sections">
+    <a href="app.html" data-i18n="nav.wallet">Wallet</a>
+    <a href="shop.html" data-i18n="nav.shop">Demo shop</a>
+    <a href="ops.html" data-i18n="nav.ops">Operator panel</a>
+  </nav>
+  <div class="tools">
+    <button class="btn small ghost" type="button" data-action="lang" data-i18n="nav.lang">English</button>
+    <button class="btn small ghost" type="button" data-action="theme" data-i18n-label="nav.theme" aria-label="Switch theme"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+    <button class="btn small" type="button" data-action="signout" data-i18n="nav.signout" hidden></button>
+  </div>
 </header>
 <main id="main" class="page">
   <div class="grid">
-    <section class="card" aria-labelledby="payments-title">
-      <h2 id="payments-title" data-i18n="shop.payments"></h2>
-      <ul class="history" id="payments"></ul>
-    </section>
-    <aside class="card">
-      <h2 data-i18n="shop.title"></h2>
+    <section class="card" aria-labelledby="order-title">
+      <h2 id="order-title" data-i18n="shop.title"></h2>
       <p class="muted" data-i18n="shop.lead"></p>
+      <ol class="steps">
+        <li data-i18n="shop.step1"></li>
+        <li data-i18n="shop.step2"></li>
+        <li data-i18n="shop.step3"></li>
+      </ol>
       <form id="request" novalidate>
         <div class="field">
           <label for="key" data-i18n="shop.key"></label>
@@ -41,11 +49,19 @@
         <p class="cart-total"><span data-i18n="shop.total"></span> <strong id="cart-total">0</strong></p>
         <div class="field">
           <label for="customer" data-i18n="shop.customer"></label>
-          <input id="customer" name="customer" type="email" value="olena@monetka.demo" required>
+          <input id="customer" name="customer" type="email" value="olena@monetka.demo" list="customers" required>
+          <datalist id="customers">
+            <option value="olena@monetka.demo">
+            <option value="taras@monetka.demo">
+          </datalist>
         </div>
         <p class="form-error" role="alert"></p>
         <button class="btn primary" type="submit" data-i18n="shop.request" style="width:100%"></button>
       </form>
+    </section>
+    <aside class="card" aria-labelledby="payments-title">
+      <h2 id="payments-title" data-i18n="shop.payments"></h2>
+      <ul class="history" id="payments"></ul>
     </aside>
   </div>
 </main>
