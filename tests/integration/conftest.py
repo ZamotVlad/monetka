@@ -19,6 +19,7 @@ from app.db.uow import UnitOfWork
 from app.domain.ledger import PSP_ACCOUNT_ID, TransactionKind, move
 from app.domain.money import Money
 from app.main import create_app
+from app.realtime import Hub
 from app.services.ledger import LedgerService
 from app.services.merchants import MerchantService
 
@@ -73,6 +74,7 @@ def settings(database_url: str) -> Settings:
         database_url=database_url,
         bcrypt_rounds=4,
         money_rate_limit_per_minute=10_000,
+        kafka_enabled=False,
     )
 
 
@@ -89,6 +91,7 @@ def app(
     app.state.engine = engine
     app.state.session_factory = session_factory
     app.state.redis = FakeAsyncRedis(server=FakeServer(), decode_responses=True)
+    app.state.hub = Hub()
     return app
 
 

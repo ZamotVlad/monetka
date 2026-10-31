@@ -6,11 +6,14 @@ from httpx import ASGITransport, AsyncClient
 
 from app.config import Settings
 from app.main import create_app
+from app.realtime import Hub
 
 
 @pytest.fixture
 def app() -> FastAPI:
-    return create_app(Settings(environment="test"))
+    app = create_app(Settings(environment="test", kafka_enabled=False))
+    app.state.hub = Hub()
+    return app
 
 
 @pytest.fixture
