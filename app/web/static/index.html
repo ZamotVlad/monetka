@@ -35,7 +35,16 @@
         <button type="button" role="tab" id="tab-in" aria-selected="true" aria-controls="auth-form" data-mode="in" data-i18n="auth.signin"></button>
         <button type="button" role="tab" id="tab-up" aria-selected="false" aria-controls="auth-form" data-mode="up" data-i18n="auth.signup"></button>
       </div>
-      <p class="demo-note" data-i18n="auth.demo"></p>
+      <div class="demo-note">
+        <p data-i18n="auth.demo"></p>
+        <div class="quick">
+          <span data-i18n="auth.quick"></span>
+          <button class="btn small" type="button" data-as="olena@monetka.demo" data-i18n="auth.olena"></button>
+          <button class="btn small" type="button" data-as="taras@monetka.demo" data-i18n="auth.taras"></button>
+          <button class="btn small" type="button" data-as="ops@monetka.demo" data-i18n="auth.operator"></button>
+        </div>
+      </div>
+      <p class="banner warn" id="ops-hint" hidden data-i18n="auth.opsHint"></p>
       <form id="auth-form" role="tabpanel" aria-labelledby="tab-in" novalidate>
         <div class="field">
           <label for="email" data-i18n="auth.email"></label>

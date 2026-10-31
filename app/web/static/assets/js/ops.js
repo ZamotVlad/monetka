@@ -2,7 +2,7 @@ import { api, session } from "./api.js";
 import { t } from "./i18n.js";
 import { setupChrome, money, dateTime, escapeHtml, errorText, toast } from "./ui.js";
 
-if (!session.token) location.replace("index.html");
+if (!session.token) location.replace("index.html?next=ops");
 setupChrome();
 
 const $ = (id) => document.getElementById(id);
@@ -60,6 +60,11 @@ async function refresh() {
   renderJournal(journal);
 }
 
+$("switch").addEventListener("click", () => {
+  session.clear();
+  location.href = "index.html?next=ops";
+});
+
 $("run").addEventListener("click", async (event) => {
   event.target.disabled = true;
   try {
@@ -77,6 +82,10 @@ window.addEventListener("langchange", () => refresh().catch(() => {}));
 refresh()
   .then(() => setInterval(() => refresh().catch(() => {}), 5000))
   .catch((failure) => {
-    if (failure.status === 403) $("denied").hidden = false;
+    if (failure.status === 403) {
+      $("denied").hidden = false;
+      $("switch").hidden = false;
+      for (const section of document.querySelectorAll("main > section")) section.hidden = true;
+    }
     else toast(errorText(failure), "bad");
   });

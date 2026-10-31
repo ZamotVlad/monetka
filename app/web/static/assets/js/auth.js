@@ -3,7 +3,10 @@ import { t } from "./i18n.js";
 import { setupChrome, busy, errorText } from "./ui.js";
 
 setupChrome();
-if (session.token) location.replace("app.html");
+
+// Pages that need a specific account send people here with ?next=ops
+const next = new URLSearchParams(location.search).get("next") === "ops" ? "ops.html" : "app.html";
+if (session.token) location.replace(next);
 if (DEMO) document.getElementById("api-link").remove();
 
 const form = document.getElementById("auth-form");
@@ -25,9 +28,23 @@ for (const tab of document.querySelectorAll("[role=tab]")) {
   });
 }
 
-if (DEMO) {
-  form.email.value = "olena@monetka.demo";
+function fillDemo(email) {
+  form.email.value = email;
   form.password.value = "demo-password";
+}
+
+for (const button of document.querySelectorAll("[data-as]")) {
+  button.addEventListener("click", () => {
+    fillDemo(button.dataset.as);
+    submit.focus();
+  });
+}
+
+if (next === "ops.html") {
+  fillDemo("ops@monetka.demo");
+  document.getElementById("ops-hint").hidden = false;
+} else if (DEMO) {
+  fillDemo("olena@monetka.demo");
 }
 
 form.addEventListener("submit", (event) => {
@@ -39,7 +56,7 @@ form.addEventListener("submit", (event) => {
       if (mode === "up") await api("/auth/register", { method: "POST", body: credentials, auth: false });
       const { access_token } = await api("/auth/login", { method: "POST", body: credentials, auth: false });
       session.save(access_token);
-      location.href = "app.html";
+      location.href = next;
     } catch (failure) {
       error.textContent = errorText(failure);
     }

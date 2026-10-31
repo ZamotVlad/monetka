@@ -203,6 +203,8 @@ input.money { font-family: var(--mono); font-size: 20px; }
 .amount.in { color: var(--green); }
 .amount.out { color: var(--red); }
 .amount.held { color: var(--amber); }
+.amount.muted { color: var(--muted); text-decoration: line-through; }
+.amount.muted small { text-decoration: none; }
 .amount small { display: block; font: 11px var(--mono); color: var(--muted); }
 
 .empty { color: var(--muted); font-size: 14px; padding: 8px 0; margin: 0; }
@@ -253,6 +255,8 @@ dialog .row { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wr
 .tabs button { min-height: 48px; font: 600 14px var(--mono); background: transparent; color: var(--muted); border: 0; cursor: pointer; }
 .tabs button[aria-selected="true"] { background: var(--ink); color: var(--paper); }
 .demo-note { font-size: 14px; border: 2px dashed var(--ink); padding: 10px 12px; margin-bottom: 18px; }
+.demo-note p { margin: 0 0 8px; }
+.quick { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font: 13px var(--mono); }
 
 /* Operator panel */
 
@@ -270,6 +274,17 @@ table.journal { width: 100%; border-collapse: collapse; font: 14px var(--mono); 
 .journal td.num, .journal th.num { text-align: right; white-space: nowrap; }
 .journal tbody tr.txn td { border-top: 2px solid var(--ink); font-weight: 700; padding-top: 10px; }
 .journal tbody tr.sum td { color: var(--green); font-size: 12px; }
+
+.menu { border: 2px solid var(--ink); padding: 8px 12px 4px; margin: 0 0 12px; }
+.menu legend { font: 600 13px var(--mono); padding: 0 6px; }
+.menu ul { list-style: none; margin: 0; padding: 0; }
+.menu li { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px dashed var(--rule); }
+.menu li:last-child { border-bottom: 0; }
+.menu .price { font: 14px var(--mono); color: var(--muted); }
+.stepper { display: inline-flex; align-items: center; gap: 6px; }
+.stepper button { width: 32px; height: 32px; padding: 0; min-height: 0; }
+.stepper output { min-width: 1.5em; text-align: center; font: 600 15px var(--mono); }
+.cart-total { display: flex; justify-content: space-between; font-family: var(--mono); margin: 0 0 16px; }
 
 footer.site { max-width: 1120px; margin: 0 auto; padding: 0 24px 32px; font: 13px var(--mono); color: var(--muted); display: flex; gap: 16px; flex-wrap: wrap; }
 
