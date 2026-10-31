@@ -14,3 +14,9 @@ async def test_metrics_use_route_templates(client: AsyncClient) -> None:
     body = (await client.get("/metrics")).text
     assert 'route="/api/v1/health/live"' in body
     assert "monetka_http_request_seconds_bucket" in body
+
+
+async def test_security_headers_are_set(client: AsyncClient) -> None:
+    response = await client.get("/")
+    assert response.headers["x-content-type-options"] == "nosniff"
+    assert response.headers["x-frame-options"] == "DENY"

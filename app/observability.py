@@ -53,6 +53,15 @@ def configure_logging(level: str = "INFO") -> None:
     root.setLevel(level)
 
 
+# Cheap browser-side protection: no MIME sniffing, no framing (clickjacking), no full URLs
+# leaking to other sites in the Referer header
+SECURITY_HEADERS = [
+    (b"x-content-type-options", b"nosniff"),
+    (b"x-frame-options", b"DENY"),
+    (b"referrer-policy", b"same-origin"),
+]
+
+
 class RequestContextMiddleware:
     """Tags each request with an id and records its metrics.
 
@@ -77,7 +86,11 @@ class RequestContextMiddleware:
             nonlocal status
             if message["type"] == "http.response.start":
                 status = message["status"]
-                message["headers"] = [*message["headers"], (b"x-request-id", current.encode())]
+                message["headers"] = [
+                    *message["headers"],
+                    (b"x-request-id", current.encode()),
+                    *SECURITY_HEADERS,
+                ]
             await send(message)
 
         try:
