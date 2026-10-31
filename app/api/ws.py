@@ -4,6 +4,7 @@ from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
 from app.config import Settings
 from app.domain.errors import InvalidCredentials
+from app.observability import WEBSOCKETS
 from app.realtime import Hub
 from app.security import decode_access_token
 
@@ -28,6 +29,7 @@ async def events(websocket: WebSocket) -> None:
     except WebSocketDisconnect:
         return
     hub.connect(user_id, websocket)
+    WEBSOCKETS.inc()
     try:
         await websocket.send_json({"type": "ready"})
         while True:
@@ -36,3 +38,4 @@ async def events(websocket: WebSocket) -> None:
         pass
     finally:
         hub.disconnect(user_id, websocket)
+        WEBSOCKETS.dec()

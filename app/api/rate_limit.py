@@ -8,6 +8,7 @@ from redis.exceptions import RedisError
 
 from app.api.errors import ApiError
 from app.config import Settings
+from app.observability import RATE_LIMITED
 
 logger = logging.getLogger(__name__)
 
@@ -40,6 +41,7 @@ class RateLimit:
             logger.warning("rate limiter unavailable, letting the request through")
             return
         if count > limit:
+            RATE_LIMITED.inc()
             retry_after = self._window - int(time.time()) % self._window
             raise ApiError(
                 status.HTTP_429_TOO_MANY_REQUESTS,

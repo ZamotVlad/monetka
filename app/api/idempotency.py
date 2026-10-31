@@ -5,6 +5,7 @@ from fastapi import Header, Request, Response
 from pydantic import BaseModel
 
 from app.db.uow import UnitOfWork
+from app.observability import IDEMPOTENT_REPLAYS
 from app.services.idempotency import IdempotencyService, fingerprint
 
 IdempotencyKey = Annotated[
@@ -39,4 +40,5 @@ async def run_once(
     response.status_code = stored.status_code
     if stored.replayed:
         response.headers["Idempotent-Replayed"] = "true"
+        IDEMPOTENT_REPLAYS.inc()
     return stored.body

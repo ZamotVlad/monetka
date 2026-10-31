@@ -9,6 +9,7 @@ from app.api.rate_limit import money_limit
 from app.api.schemas import DepositIn, DepositOut, ProviderEventIn
 from app.domain.money import Money
 from app.integrations import psp
+from app.observability import WEBHOOKS
 from app.services.deposits import DepositService, DepositStatus, ProviderEvent
 
 router = APIRouter(tags=["deposits"])
@@ -73,4 +74,5 @@ async def provider_webhook(
         )
     )
     await uow.commit()
+    WEBHOOKS.labels(result).inc()
     return {"result": result}
