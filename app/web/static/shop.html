@@ -34,17 +34,14 @@
           <input id="key" name="key" autocomplete="off" required aria-describedby="key-hint">
           <span class="hint" id="key-hint" data-i18n="shop.keyHint"></span>
         </div>
+        <fieldset class="menu">
+          <legend data-i18n="shop.menu"></legend>
+          <ul id="menu"></ul>
+        </fieldset>
+        <p class="cart-total"><span data-i18n="shop.total"></span> <strong id="cart-total">0</strong></p>
         <div class="field">
           <label for="customer" data-i18n="shop.customer"></label>
           <input id="customer" name="customer" type="email" value="olena@monetka.demo" required>
-        </div>
-        <div class="field">
-          <label for="amount" data-i18n="dialog.amount"></label>
-          <input class="money" id="amount" name="amount" inputmode="decimal" value="86.00" required>
-        </div>
-        <div class="field">
-          <label for="description" data-i18n="shop.description"></label>
-          <input id="description" name="description" maxlength="140" value="Лате і круасан" required>
         </div>
         <p class="form-error" role="alert"></p>
         <button class="btn primary" type="submit" data-i18n="shop.request" style="width:100%"></button>

@@ -1,6 +1,6 @@
 import { api, DEMO } from "./api.js";
 import { t } from "./i18n.js";
-import { setupChrome, money, parseAmount, dateTime, escapeHtml, errorText, toast, busy } from "./ui.js";
+import { setupChrome, money, dateTime, escapeHtml, errorText, toast, busy } from "./ui.js";
 
 setupChrome();
 
@@ -8,6 +8,51 @@ const form = document.getElementById("request");
 const list = document.getElementById("payments");
 const error = form.querySelector(".form-error");
 const KEY = "monetka.shop-key";
+
+const MENU = [
+  { id: "latte", price: 8600 },
+  { id: "cappuccino", price: 7800 },
+  { id: "croissant", price: 6500 },
+  { id: "cheesecake", price: 9500 },
+  { id: "beans", price: 32000 },
+  { id: "mug", price: 35000 },
+];
+const cart = { latte: 1, croissant: 1 };
+
+function cartTotal() {
+  return MENU.reduce((sum, item) => sum + item.price * (cart[item.id] ?? 0), 0);
+}
+
+function cartDescription() {
+  return MENU.filter((item) => cart[item.id])
+    .map((item) => (cart[item.id] > 1 ? `${t(`item.${item.id}`)} ×${cart[item.id]}` : t(`item.${item.id}`)))
+    .join(", ")
+    .slice(0, 140);
+}
+
+function renderMenu() {
+  document.getElementById("menu").innerHTML = MENU.map(
+    (item) => `<li>
+      <span>${t(`item.${item.id}`)}</span>
+      <span class="price">${money(item.price)}</span>
+      <span class="stepper">
+        <button class="btn small" type="button" data-minus="${item.id}" aria-label="− ${t(`item.${item.id}`)}">−</button>
+        <output aria-live="polite">${cart[item.id] ?? 0}</output>
+        <button class="btn small" type="button" data-plus="${item.id}" aria-label="+ ${t(`item.${item.id}`)}">+</button>
+      </span>
+    </li>`,
+  ).join("");
+  document.getElementById("cart-total").textContent = money(cartTotal());
+}
+
+document.getElementById("menu").addEventListener("click", (event) => {
+  const button = event.target.closest("button");
+  if (!button) return;
+  const id = button.dataset.plus ?? button.dataset.minus;
+  cart[id] = Math.max(0, Math.min(9, (cart[id] ?? 0) + (button.dataset.plus ? 1 : -1)));
+  renderMenu();
+  document.querySelector(`[data-${button.dataset.plus ? "plus" : "minus"}="${id}"]`).focus();
+});
 
 form.key.value = sessionStorage.getItem(KEY) ?? (DEMO ? "mk_demo" : "");
 
@@ -45,12 +90,12 @@ form.addEventListener("submit", (event) => {
   sessionStorage.setItem(KEY, form.key.value.trim());
   busy(form, async () => {
     try {
-      const amount = parseAmount(form.amount.value);
-      if (!amount) throw new Error(t("error.validation_error"));
+      const amount = cartTotal();
+      if (!amount) throw new Error(t("shop.empty"));
       await merchant("", {
         method: "POST",
         idempotent: true,
-        body: { customer_email: form.customer.value.trim(), amount, description: form.description.value.trim() },
+        body: { customer_email: form.customer.value.trim(), amount, description: cartDescription() },
       });
       await refresh();
     } catch (failure) {
@@ -72,6 +117,10 @@ list.addEventListener("click", async (event) => {
   }
 });
 
-window.addEventListener("langchange", () => refresh().catch(() => {}));
+window.addEventListener("langchange", () => {
+  renderMenu();
+  refresh().catch(() => {});
+});
+renderMenu();
 refresh().catch((failure) => (error.textContent = errorText(failure)));
 setInterval(() => refresh().catch(() => {}), 3000);
