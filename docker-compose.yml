@@ -11,6 +11,7 @@ x-app: &app
     PSP_CALLBACK_URL: http://api:8000/api/v1/webhooks/psp
     PSP_SECRET: ${PSP_SECRET:-local-dev-psp-secret-change-me-in-production}
     AUTH_RATE_LIMIT_PER_MINUTE: ${AUTH_RATE_LIMIT_PER_MINUTE:-10}
+    TEST_MONEY_ENABLED: "true"
 
 services:
   postgres:

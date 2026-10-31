@@ -61,3 +61,13 @@ class WalletService:
             move(wallet.id, PSP_ACCOUNT_ID, amount),
             {"card": card_last4},
         )
+
+    async def add_test_money(self, user: User, amount: Money) -> LedgerTransaction:
+        """Play money for trying the app. Still a normal balanced posting from the
+        provider account, so reconciliation and the books stay correct."""
+        wallet = await self._uow.accounts.wallet_of(user.id)
+        return await LedgerService(self._uow).post(
+            TransactionKind.DEPOSIT,
+            move(PSP_ACCOUNT_ID, wallet.id, amount),
+            {"source": "test"},
+        )

@@ -44,6 +44,9 @@ class Settings(BaseSettings):
     payment_request_ttl_hours: int = 24
     hold_ttl_days: int = 7
 
+    # A button that adds play money without a card. Off unless asked for, never in production
+    test_money_enabled: bool = False
+
     auth_rate_limit_per_minute: int = 10
     money_rate_limit_per_minute: int = 60
 
@@ -53,6 +56,8 @@ class Settings(BaseSettings):
             self.jwt_secret == DEV_JWT_SECRET or self.psp_secret == DEV_PSP_SECRET
         ):
             raise ValueError("Set real secrets before running in production")
+        if self.environment == "production" and self.test_money_enabled:
+            raise ValueError("Test money cannot be enabled in production")
         return self
 
 

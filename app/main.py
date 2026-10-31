@@ -15,6 +15,7 @@ from app.api import (
     ops,
     payments,
     statements,
+    test_money,
     transfers,
     wallet,
     ws,
@@ -76,6 +77,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         ws.router,
         statements.router,
         ops.router,
+        test_money.router,
     ):
         app.include_router(router, prefix="/api/v1")
     app.include_router(metrics.router)
