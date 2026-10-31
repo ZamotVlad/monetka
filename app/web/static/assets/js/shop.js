@@ -1,4 +1,4 @@
-import { api, DEMO } from "./api.js";
+import { api } from "./api.js";
 import { t } from "./i18n.js";
 import { setupChrome, money, dateTime, escapeHtml, errorText, toast, busy } from "./ui.js";
 
@@ -54,7 +54,9 @@ document.getElementById("menu").addEventListener("click", (event) => {
   document.querySelector(`[data-${button.dataset.plus ? "plus" : "minus"}="${id}"]`).focus();
 });
 
-form.key.value = sessionStorage.getItem(KEY) ?? (DEMO ? "mk_demo" : "");
+// seed-demo gives the demo coffee shop this fixed key, so the till works out of the box
+const DEMO_KEY = "mk_demo_zerno";
+form.key.value = sessionStorage.getItem(KEY) ?? DEMO_KEY;
 
 const merchant = (path, options = {}) =>
   api(`/merchant/payments${path}`, { ...options, auth: false, headers: { "X-API-Key": form.key.value.trim() } });
@@ -92,11 +94,13 @@ form.addEventListener("submit", (event) => {
     try {
       const amount = cartTotal();
       if (!amount) throw new Error(t("shop.empty"));
+      const email = form.customer.value.trim();
       await merchant("", {
         method: "POST",
         idempotent: true,
-        body: { customer_email: form.customer.value.trim(), amount, description: cartDescription() },
+        body: { customer_email: email, amount, description: cartDescription() },
       });
+      toast(t("shop.sent", { amount: money(amount), email }), "good");
       await refresh();
     } catch (failure) {
       error.textContent = failure.code ? errorText(failure) : failure.message;
@@ -110,7 +114,8 @@ list.addEventListener("click", async (event) => {
   const id = button.dataset.capture ?? button.dataset.void;
   button.disabled = true;
   try {
-    await merchant(`/${id}/${button.dataset.capture ? "capture" : "void"}`, { method: "POST" });
+    const payment = await merchant(`/${id}/${button.dataset.capture ? "capture" : "void"}`, { method: "POST" });
+    toast(button.dataset.capture ? t("shop.captured", { amount: money(payment.amount) }) : t("shop.voided"), "good");
     await refresh();
   } catch (failure) {
     toast(errorText(failure), "bad");

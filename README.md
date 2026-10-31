@@ -37,9 +37,9 @@ docker compose exec api python -m app.cli seed-demo
 ```
 
 Open http://localhost:8000 and sign in as `olena@monetka.demo` / `demo-password`.
-The wallet has a test money button. Also: demo shop `/shop.html` (API key is printed by
-`seed-demo`), operator panel `/ops.html` (`ops@monetka.demo`), API docs `/docs`,
-Grafana on port 3000.
+The header links the wallet, the demo coffee shop (its API key is filled in) and the
+operator panel (`ops@monetka.demo`). The wallet has a test money button.
+API docs at `/docs`, Grafana on port 3000.
 
 ## Test
 

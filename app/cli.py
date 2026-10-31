@@ -50,6 +50,8 @@ async def make_operator(email: str) -> None:
 
 
 DEMO_PASSWORD = "demo-password"
+# Public on purpose, like the passwords above: demo data is for local runs only
+DEMO_SHOP_KEY = "mk_demo_zerno"
 
 
 async def seed_demo() -> None:
@@ -73,7 +75,7 @@ async def seed_demo() -> None:
                 {"card": "4242"},
             )
         await WalletService(uow).transfer(taras, olena.email, Money(15_000), "За квитки")
-        merchant, api_key = await MerchantService(uow).create("Кав'ярня «Зерно»")
+        merchant, api_key = await MerchantService(uow).create("Кав'ярня «Зерно»", DEMO_SHOP_KEY)
         await PaymentService(uow, settings).request(
             merchant, olena.email, Money(8_600), "Лате і круасан"
         )
