@@ -55,3 +55,23 @@ class HistoryItem(BaseModel):
 class HistoryPage(BaseModel):
     items: list[HistoryItem]
     next_before: int | None
+
+
+class TransferIn(BaseModel):
+    to_email: EmailStr
+    amount: int = Amount
+    note: str | None = Field(default=None, max_length=140)
+
+
+class WithdrawalIn(BaseModel):
+    amount: int = Amount
+    card_last4: str = Field(pattern=r"^\d{4}$")
+
+
+class TransactionOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    kind: str
+    details: dict[str, Any]
+    created_at: datetime
