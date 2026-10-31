@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;600&display=swap">
+<link rel="stylesheet" href="assets/css/monetka.css">
+<title>Monetka · Wallet</title>
+</head>
+<body>
+<a class="skip" href="#main" data-i18n="skip">Skip to content</a>
+<header class="topbar">
+  <a class="logo" href="app.html"><span class="coin" aria-hidden="true">₴</span>Monetka</a>
+  <span class="live" id="live" data-state="off" data-i18n="live.off"></span>
+  <span class="who" id="who"></span>
+  <a class="btn small ghost" href="ops.html" id="ops-link" hidden data-i18n="nav.ops"></a>
+  <button class="btn small ghost" type="button" data-action="lang" data-i18n="nav.lang">English</button>
+  <button class="btn small ghost" type="button" data-action="theme" data-i18n-label="nav.theme" aria-label="Switch theme"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+  <button class="btn small" type="button" data-action="signout" data-i18n="nav.signout"></button>
+</header>
+
+<main id="main" class="page">
+  <div id="banner" role="status" aria-live="polite"></div>
+  <div class="grid">
+    <div class="stack">
+      <section class="card balance" aria-labelledby="available-label">
+        <div>
+          <div class="label" id="available-label" data-i18n="wallet.available"></div>
+          <div class="main" id="available">—</div>
+        </div>
+        <div class="split">
+          <div>
+            <div class="label" data-i18n="wallet.held"></div>
+            <div class="value" id="held">—</div>
+            <div class="label" data-i18n="wallet.heldHint"></div>
+          </div>
+          <div>
+            <div class="label" data-i18n="wallet.total"></div>
+            <div class="value" id="total">—</div>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn primary" type="button" data-open="topup" data-i18n="wallet.topup"></button>
+          <button class="btn" type="button" data-open="send" data-i18n="wallet.send"></button>
+          <button class="btn" type="button" data-open="withdraw" data-i18n="wallet.withdraw"></button>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="requests-title">
+        <h2 id="requests-title" data-i18n="wallet.requests"></h2>
+        <div id="requests"></div>
+      </section>
+
+      <section class="card" aria-labelledby="history-title">
+        <h2 id="history-title" data-i18n="wallet.history"></h2>
+        <ul class="history" id="history"></ul>
+        <button class="btn small" type="button" id="more" hidden data-i18n="wallet.more"></button>
+      </section>
+    </div>
+
+    <aside class="stack">
+      <section class="card" aria-labelledby="reserved-title">
+        <h2 id="reserved-title" data-i18n="wallet.reserved"></h2>
+        <div id="reserved"></div>
+      </section>
+      <section class="card" aria-labelledby="statements-title">
+        <h2 id="statements-title" data-i18n="wallet.statements"></h2>
+        <ul class="list-plain" id="statements"></ul>
+        <button class="btn small" type="button" id="make-statement" data-i18n="wallet.makeStatement" style="margin-top:12px"></button>
+      </section>
+    </aside>
+  </div>
+</main>
+
+<dialog id="topup" aria-labelledby="topup-title">
+  <form method="dialog" novalidate>
+    <h2 id="topup-title" data-i18n="dialog.topup"></h2>
+    <div class="field">
+      <label for="topup-amount" data-i18n="dialog.amount"></label>
+      <input class="money" id="topup-amount" name="amount" inputmode="decimal" autocomplete="off" required aria-describedby="topup-hint">
+      <span class="hint" id="topup-hint" data-i18n="dialog.topupHint"></span>
+    </div>
+    <p class="form-error" role="alert"></p>
+    <div class="row">
+      <button class="btn ghost" type="button" value="cancel" data-close data-i18n="dialog.cancel"></button>
+      <button class="btn primary" type="submit" data-i18n="dialog.continue"></button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="send" aria-labelledby="send-title">
+  <form method="dialog" novalidate>
+    <h2 id="send-title" data-i18n="dialog.send"></h2>
+    <div class="field">
+      <label for="send-to" data-i18n="dialog.to"></label>
+      <input id="send-to" name="to" type="email" autocomplete="email" required>
+    </div>
+    <div class="field">
+      <label for="send-amount" data-i18n="dialog.amount"></label>
+      <input class="money" id="send-amount" name="amount" inputmode="decimal" autocomplete="off" required>
+    </div>
+    <div class="field">
+      <label for="send-note" data-i18n="dialog.note"></label>
+      <input id="send-note" name="note" maxlength="140">
+    </div>
+    <p class="form-error" role="alert"></p>
+    <div class="row">
+      <button class="btn ghost" type="button" data-close data-i18n="dialog.cancel"></button>
+      <button class="btn primary" type="submit" data-i18n="dialog.sendBtn"></button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="withdraw" aria-labelledby="withdraw-title">
+  <form method="dialog" novalidate>
+    <h2 id="withdraw-title" data-i18n="dialog.withdraw"></h2>
+    <div class="field">
+      <label for="withdraw-amount" data-i18n="dialog.amount"></label>
+      <input class="money" id="withdraw-amount" name="amount" inputmode="decimal" autocomplete="off" required>
+    </div>
+    <div class="field">
+      <label for="withdraw-card" data-i18n="dialog.card"></label>
+      <input id="withdraw-card" name="card" inputmode="numeric" pattern="\d{4}" maxlength="4" autocomplete="off" required value="4242">
+    </div>
+    <p class="form-error" role="alert"></p>
+    <div class="row">
+      <button class="btn ghost" type="button" data-close data-i18n="dialog.cancel"></button>
+      <button class="btn primary" type="submit" data-i18n="dialog.withdrawBtn"></button>
+    </div>
+  </form>
+</dialog>
+
+<script type="module" src="assets/js/wallet.js"></script>
+</body>
+</html>
