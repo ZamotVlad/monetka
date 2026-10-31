@@ -2,7 +2,15 @@ from datetime import datetime
 from typing import Any
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
+from pydantic import (
+    AliasChoices,
+    AliasPath,
+    BaseModel,
+    ConfigDict,
+    EmailStr,
+    Field,
+    field_validator,
+)
 
 # Amounts travel as integer kopiyky, like Stripe's cents: no float rounding on the wire
 Amount = Field(gt=0, le=100_000_000, description="Minor units, 8600 = 86.00 UAH")
@@ -75,3 +83,28 @@ class TransactionOut(BaseModel):
     kind: str
     details: dict[str, Any]
     created_at: datetime
+
+
+class PaymentRequestIn(BaseModel):
+    customer_email: EmailStr
+    amount: int = Amount
+    description: str = Field(min_length=1, max_length=140)
+
+
+class PaymentOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    # Read from the ORM object and from a stored idempotent response alike
+    merchant_name: str = Field(
+        validation_alias=AliasChoices(AliasPath("merchant", "name"), "merchant_name")
+    )
+    amount: int
+    description: str
+    status: str
+    expires_at: datetime
+    created_at: datetime
+
+
+class MerchantPaymentOut(PaymentOut):
+    customer_id: UUID = Field(validation_alias=AliasChoices("user_id", "customer_id"))

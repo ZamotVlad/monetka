@@ -1,15 +1,16 @@
 from collections.abc import AsyncIterator
 from typing import Annotated
 
-from fastapi import Depends, Request
+from fastapi import Depends, Header, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from app.config import Settings
-from app.db.models import User
+from app.db.models import Merchant, User
 from app.db.uow import UnitOfWork
 from app.domain.errors import InvalidCredentials, PermissionDenied
 from app.security import decode_access_token
 from app.services.auth import AuthService
+from app.services.merchants import MerchantService
 
 
 def get_settings(request: Request) -> Settings:
@@ -49,3 +50,15 @@ async def get_operator(user: CurrentUser) -> User:
 
 
 Operator = Annotated[User, Depends(get_operator)]
+
+
+async def get_merchant(
+    uow: UoW, api_key: Annotated[str | None, Header(alias="X-API-Key")] = None
+) -> Merchant:
+    merchant = await MerchantService(uow).authenticate(api_key) if api_key else None
+    if merchant is None:
+        raise InvalidCredentials("Unknown API key")
+    return merchant
+
+
+CurrentMerchant = Annotated[Merchant, Depends(get_merchant)]
