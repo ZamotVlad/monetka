@@ -5,6 +5,7 @@ import pytest
 from app.domain.errors import InvalidSignature
 from app.integrations import psp
 from psp_mock import signing
+from psp_mock.main import outcome_of
 
 SECRET = "test-secret"
 
@@ -33,3 +34,9 @@ def test_old_or_tampered_webhooks_are_rejected() -> None:
         psp.verify_webhook(SECRET, b"{}", old, signature, time.time(), 300)
     with pytest.raises(InvalidSignature):
         psp.verify_webhook(SECRET, b"{ }", old, signature, int(old), 300)
+
+
+def test_test_cards_decide_the_outcome() -> None:
+    assert outcome_of("pay", "4242 4242 4242 4242") == "succeeded"
+    assert outcome_of("pay", "4000 0000 0000 0002") == "failed"
+    assert outcome_of("cancel", "4242 4242 4242 4242") == "failed"
