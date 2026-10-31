@@ -3,7 +3,8 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from app.api import health
+from app.api import auth, health, wallet
+from app.api.errors import register_error_handlers
 from app.cache import create_redis
 from app.config import Settings, get_settings
 from app.db.session import create_engine, create_session_factory
@@ -28,7 +29,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     """A factory instead of a module-level app, so each test can build one with its own settings."""
     app = FastAPI(title="Monetka", version="0.1.0", lifespan=lifespan)
     app.state.settings = settings or get_settings()
-    app.include_router(health.router, prefix="/api/v1")
+    register_error_handlers(app)
+    for router in (health.router, auth.router, wallet.router):
+        app.include_router(router, prefix="/api/v1")
     return app
 
 
