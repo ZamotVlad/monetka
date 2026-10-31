@@ -5,10 +5,13 @@ import logging
 import signal
 
 from aiokafka.errors import KafkaError
+from prometheus_client import start_http_server
 
 from app.config import Settings, get_settings
 from app.db.session import create_engine, create_session_factory
+from app.integrations.storage import S3Storage
 from app.messaging.kafka import KafkaPublisher
+from app.observability import configure_logging
 from app.workers import jobs
 from app.workers.runner import every
 
@@ -39,6 +42,9 @@ async def main() -> None:
     for signum in (signal.SIGINT, signal.SIGTERM):
         loop.add_signal_handler(signum, stop.set)
 
+    storage = S3Storage(settings)
+    await storage.ensure_bucket()
+    start_http_server(9100)
     publisher = await start_publisher(settings, stop)
     try:
         if publisher is not None:
@@ -58,6 +64,12 @@ async def main() -> None:
                     lambda: jobs.reconcile(session_factory),
                     stop,
                 ),
+                every(
+                    "monthly-statements",
+                    3600,
+                    lambda: jobs.monthly_statements(session_factory, storage),
+                    stop,
+                ),
             )
     finally:
         if publisher is not None:
@@ -66,5 +78,5 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
+    configure_logging(get_settings().log_level)
     asyncio.run(main())

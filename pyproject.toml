@@ -43,7 +43,7 @@ strict = true
 plugins = ["pydantic.mypy"]
 
 [[tool.mypy.overrides]]
-module = ["aiokafka.*", "aioboto3.*", "testcontainers.*", "locust.*"]
+module = ["aiokafka.*", "aioboto3.*", "botocore.*", "testcontainers.*", "locust.*"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
